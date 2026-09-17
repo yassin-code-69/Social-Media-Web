@@ -20,6 +20,7 @@ import {
   CalendarCheck2,
   PlusCircle,
   Disc,
+  Trophy,
 } from "lucide-react";
 
 export function Header() {
@@ -29,6 +30,7 @@ export function Header() {
     { label: "হোম ড্যাশবোর্ড", href: "/", icon: Home },
     { label: "মিশন সেন্টার (লগইন বোনাস)", href: "/mission", icon: CalendarCheck2 },
     { label: "দৈনিক লাকি স্পিন", href: "/spin", icon: Disc },
+    { label: "লিডারবোর্ড (Top Earners)", href: "/leaderboard", icon: Trophy },
     { label: "টাস্ক তালিকা", href: "/tasks", icon: CheckSquare },
     { label: "নতুন কাজ দিন (Create Job)", href: "/create", icon: PlusCircle },
     { label: "দিগন্ত প্যাকেজ", href: "/packages", icon: Package },

@@ -97,11 +97,11 @@ export function QuickActionGrid() {
     },
     {
       id: "leadership",
-      title: "লিডারশিপ",
+      title: "লিডারবোর্ড",
       subtitle: "টপ মেম্বারদের তালিকা",
       icon: Trophy,
       color: "text-[#7c3aed] bg-[#f5f3ff]",
-      href: "/referral",
+      href: "/leaderboard",
     },
     {
       id: "monthly-bonus",
