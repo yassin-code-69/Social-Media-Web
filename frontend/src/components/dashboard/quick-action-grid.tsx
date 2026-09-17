@@ -33,10 +33,6 @@ export function QuickActionGrid() {
   const [dailyBonusClaimed, setDailyBonusClaimed] = useState(false);
   const [dailyBonusMsg, setDailyBonusMsg] = useState<string | null>(null);
 
-  const [spinModalOpen, setSpinModalOpen] = useState(false);
-  const [spinning, setSpinning] = useState(false);
-  const [spinResult, setSpinResult] = useState<number | null>(null);
-
   const [giftModalOpen, setGiftModalOpen] = useState(false);
   const [giftCodeInput, setGiftCodeInput] = useState("");
   const [giftError, setGiftError] = useState("");
@@ -51,20 +47,6 @@ export function QuickActionGrid() {
       setDailyBonusMsg("অভিনন্দন! আপনি আজকের ৳ ৫ ডেইলি বোনাস পেয়েছেন।");
     }
     setTimeout(() => setDailyBonusMsg(null), 3500);
-  };
-
-  const handleSpin = () => {
-    if (spinning) return;
-    setSpinning(true);
-    setSpinResult(null);
-
-    setTimeout(() => {
-      const rewards = [2, 5, 10, 15, 20];
-      const win = rewards[Math.floor(Math.random() * rewards.length)];
-      adjustUserWallet(win, "CREDIT", `লাকি স্পিন উইন: ৳${win}`);
-      setSpinResult(win);
-      setSpinning(false);
-    }, 1200);
   };
 
   const handleGiftCodeSubmit = (e: React.FormEvent) => {
@@ -108,13 +90,10 @@ export function QuickActionGrid() {
     {
       id: "lucky-spin",
       title: "লাকি স্পিন",
-      subtitle: "লাকি হয়ে জিতুন",
+      subtitle: "চাকা ঘুরিয়ে জিতে নিন",
       icon: Disc,
       color: "text-[#db2777] bg-[#fdf2f8]",
-      onClick: () => {
-        setSpinResult(null);
-        setSpinModalOpen(true);
-      },
+      href: "/spin",
     },
     {
       id: "leadership",
@@ -274,62 +253,6 @@ export function QuickActionGrid() {
           );
         })}
       </div>
-
-      {/* Lucky Spin Modal */}
-      {spinModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-xl text-center animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b pb-3 text-slate-800">
-              <div className="flex items-center gap-2">
-                <Disc className="w-5 h-5 text-pink-500 animate-spin" />
-                <h3 className="font-bold text-sm">দৈনিক লাকি স্পিন</h3>
-              </div>
-              <button
-                onClick={() => setSpinModalOpen(false)}
-                className="p-1 rounded-lg hover:bg-slate-100 text-slate-400"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="py-4">
-              <div
-                className={`w-28 h-28 mx-auto rounded-full border-4 border-dashed border-pink-400 flex items-center justify-center bg-pink-50 shadow-inner ${
-                  spinning ? "animate-spin" : ""
-                }`}
-              >
-                <Disc className="w-14 h-14 text-pink-500" />
-              </div>
-
-              {spinResult !== null && (
-                <div className="mt-4 p-3 bg-emerald-50 rounded-2xl border border-emerald-200 text-emerald-800 animate-in zoom-in-95 duration-200">
-                  <span className="text-xs font-bold block">অভিনন্দন! আপনি জিতেছেন:</span>
-                  <span className="text-2xl font-black font-inter text-emerald-600">৳{spinResult}</span>
-                  <span className="text-[11px] block text-emerald-700 mt-0.5">টাকা সরাসরি ব্যালেন্সে যুক্ত হয়েছে!</span>
-                </div>
-              )}
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setSpinModalOpen(false)}
-                className="py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
-              >
-                বন্ধ করুন
-              </button>
-              <button
-                type="button"
-                disabled={spinning}
-                onClick={handleSpin}
-                className="py-2.5 rounded-xl text-xs font-bold text-white bg-pink-600 hover:bg-pink-700 shadow disabled:opacity-50"
-              >
-                {spinning ? "ঘুরছে..." : "স্পিন করুন"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Gift Code Modal */}
       {giftModalOpen && (

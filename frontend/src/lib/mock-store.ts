@@ -153,6 +153,29 @@ const initialCheckIn: DailyCheckInState = {
   streakActive: true,
 };
 
+export interface DailySpinHistoryItem {
+  id: string;
+  reward: number;
+  timestamp: string;
+}
+
+export interface DailySpinState {
+  spinsRemaining: number;
+  totalSpinsDone: number;
+  lastSpinDate: string | null;
+  history: DailySpinHistoryItem[];
+}
+
+const initialSpinState: DailySpinState = {
+  spinsRemaining: 3,
+  totalSpinsDone: 2,
+  lastSpinDate: null,
+  history: [
+    { id: "spin_seed_1", reward: 15, timestamp: "গতকাল রাত ৮:৩০" },
+    { id: "spin_seed_2", reward: 5, timestamp: "২ দিন আগে" },
+  ],
+};
+
 // Initial Mock Seed
 const initialProfile: UserProfile = {
   id: "user_1024",
@@ -775,6 +798,7 @@ export function useMockStore() {
   const [users, setUsers] = useState<UserProfile[]>(initialUsers);
   const [settings, setSettings] = useState<AdminSettings>(initialSettings);
   const [dailyCheckIn, setDailyCheckIn] = useState<DailyCheckInState>(initialCheckIn);
+  const [dailySpin, setDailySpin] = useState<DailySpinState>(initialSpinState);
   const [userSkillLevel, setUserSkillLevel] = useState<number>(1);
 
   // Initialize from LocalStorage
@@ -800,6 +824,8 @@ export function useMockStore() {
       if (savedTasks) setTasks(JSON.parse(savedTasks));
       const savedCheckIn = localStorage.getItem("digonto_daily_checkin");
       if (savedCheckIn) setDailyCheckIn(JSON.parse(savedCheckIn));
+      const savedSpin = localStorage.getItem("digonto_daily_spin");
+      if (savedSpin) setDailySpin(JSON.parse(savedSpin));
       const savedSkill = localStorage.getItem("digonto_user_skill_level");
       if (savedSkill) setUserSkillLevel(JSON.parse(savedSkill));
     } catch {
@@ -1288,6 +1314,64 @@ export function useMockStore() {
     syncStorage("digonto_user_skill_level", next);
   };
 
+  // 15. Daily Lucky Spin Actions
+  const performDailySpin = (reward: number): { success: boolean; newBalance: number } => {
+    if (dailySpin.spinsRemaining <= 0) {
+      return { success: false, newBalance: profile.balance };
+    }
+    const newBalance = profile.balance + reward;
+    const updatedProfile = {
+      ...profile,
+      balance: newBalance,
+      totalEarned: profile.totalEarned + reward,
+    };
+    setProfile(updatedProfile);
+    syncStorage("digonto_profile", updatedProfile);
+
+    const newHistoryItem: DailySpinHistoryItem = {
+      id: `spin_${Date.now()}`,
+      reward,
+      timestamp: "এইমাত্র",
+    };
+
+    const updatedSpin: DailySpinState = {
+      ...dailySpin,
+      spinsRemaining: Math.max(0, dailySpin.spinsRemaining - 1),
+      totalSpinsDone: dailySpin.totalSpinsDone + 1,
+      lastSpinDate: new Date().toISOString().split("T")[0],
+      history: [newHistoryItem, ...dailySpin.history],
+    };
+    setDailySpin(updatedSpin);
+    syncStorage("digonto_daily_spin", updatedSpin);
+
+    // Add transaction
+    const newTx: TransactionItem = {
+      id: `tx_spin_${Date.now()}`,
+      type: "BONUS",
+      direction: "CREDIT",
+      amount: reward,
+      description: `দৈনিক লাকি স্পিন রিওয়ার্ড: ৳${reward}`,
+      balanceAfter: newBalance,
+      createdAt: "এইমাত্র",
+    };
+    const updatedTx = [newTx, ...transactions];
+    setTransactions(updatedTx);
+    syncStorage("digonto_transactions", updatedTx);
+
+    return { success: true, newBalance };
+  };
+
+  const resetDailySpinForTest = () => {
+    const reset: DailySpinState = {
+      spinsRemaining: 3,
+      totalSpinsDone: 0,
+      lastSpinDate: null,
+      history: initialSpinState.history,
+    };
+    setDailySpin(reset);
+    syncStorage("digonto_daily_spin", reset);
+  };
+
   return {
     profile,
     packages,
@@ -1321,6 +1405,9 @@ export function useMockStore() {
     dailyCheckIn,
     performDailyCheckIn,
     resetDailyCheckInForTest,
+    dailySpin,
+    performDailySpin,
+    resetDailySpinForTest,
     createPackage,
     updatePackage,
     deletePackage,
