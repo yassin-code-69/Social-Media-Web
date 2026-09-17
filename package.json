@@ -1,0 +1,17 @@
+{
+  "name": "digonto",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "bun --cwd frontend dev",
+    "build:frontend": "bun --cwd frontend build",
+    "start:frontend": "bun --cwd frontend start",
+    "dev:backend": "bun --cwd backend dev",
+    "build:backend": "bun --cwd backend build"
+  }
+}

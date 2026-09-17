@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+  }
+
+  body {
+    @apply bg-[#e6f4f8] text-slate-800 antialiased font-bengali;
+    min-height: 100vh;
+  }
+}
+
+/* Custom hide-scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
