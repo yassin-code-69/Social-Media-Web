@@ -49,8 +49,10 @@ export interface PackageItem {
 export interface TaskItem {
   id: string;
   title: string;
-  platform: "youtube" | "facebook" | "tiktok" | "website" | "video" | "content" | "captcha";
+  platform: "youtube" | "facebook" | "tiktok" | "website" | "video" | "content" | "captcha" | "instagram" | "apps" | "buysell" | "telegram" | string;
+  category?: string;
   reward: number;
+  availableWorks?: number;
   action: string;
   description: string;
   instructions: string[];
@@ -325,6 +327,246 @@ const initialTasks: TaskItem[] = [
     requiredPackage: "ফ্রি / যেকোনো",
     requiresScreenshot: false,
   },
+  {
+    id: "task_fb_follower",
+    title: "Facebook Page Follower By Search",
+    platform: "facebook",
+    category: "Facebook Work",
+    reward: 0.25,
+    availableWorks: 12,
+    action: "সার্চ করে পেজ ফলো দিন",
+    description: "সার্চ অপশনে গিয়ে পেজের নাম লিখুন, পেজটি ওপেন করে ফলো দিয়ে স্ক্রিনশট দিন।",
+    instructions: [
+      "১. ফেসবুকে নির্দিষ্ট পেজের নাম সার্চ করুন।",
+      "২. সঠিক পেজটিতে ঢুকে Follow বাটনে ক্লিক করুন।",
+      "৩. Following বাটন দেখা যাচ্ছে এমন অবস্থায় স্ক্রিনশট নিন।",
+      "৪. স্ক্রিনশট প্রুফ বক্সে আপলোড করে জমা দিন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_fb_love_react",
+    title: "FB Post Love React and Comment",
+    platform: "facebook",
+    category: "Facebook Work",
+    reward: 0.30,
+    availableWorks: 7,
+    action: "পোস্টে লাভ রিঅ্যাক্ট ও পজিটিভ কমেন্ট করুন",
+    description: "পোস্টে গিয়ে লাভ রিঅ্যাক্ট দিন এবং কাজ সম্পর্কিত সুন্দর ১ লাইনের কমেন্ট করুন।",
+    instructions: [
+      "১. পোস্টের লিংকে যান।",
+      "২. পোস্টে Love React দিন।",
+      "৩. সুন্দর মন্তব্য লিখুন (যেমন: 'অসাধারণ উদ্যোগ!')।",
+      "৪. কমেন্টসহ পোস্টের স্ক্রিনশট আপলোড করুন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_fb_id_follower",
+    title: "Facebook Id Follower By Search",
+    platform: "facebook",
+    category: "Facebook Work",
+    reward: 0.25,
+    availableWorks: 6,
+    action: "আইডি সার্চ করে ফলো দিন",
+    description: "সার্চ করে নির্দিষ্ট ফেসবুক প্রোফাইল খুঁজে বের করুন এবং ফলো দিন।",
+    instructions: [
+      "১. ফেসবুক সার্চে প্রোফাইল নাম সার্চ করুন।",
+      "২. প্রোফাইলে ঢুকে Follow করুন।",
+      "৩. ফলো সম্পন্ন হওয়ার স্ক্রিনশট নিন এবং সাবমিট করুন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_fb_group_post",
+    title: "Facebook Group Post",
+    platform: "facebook",
+    category: "Facebook Work",
+    reward: 0.25,
+    availableWorks: 6,
+    action: "গ্রুপে পোস্ট শেয়ার করুন",
+    description: "প্রদত্ত পোস্টটি যেকোনো সক্রিয় গ্রুপে শেয়ার করুন বা পোস্ট করুন।",
+    instructions: [
+      "১. গ্রুপে টেক্সট ও ইমেজ পোস্ট করুন।",
+      "২. পোস্ট পাবলিশ হলে লিংক বা স্ক্রিনশট নিন।",
+      "৩. প্রুফ জমা দিন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_fb_share",
+    title: "Facebook Post Like , Comment & Share",
+    platform: "facebook",
+    category: "Facebook Work",
+    reward: 0.40,
+    availableWorks: 6,
+    action: "লাইক, কমেন্ট ও নিজের টাইমলাইনে শেয়ার",
+    description: "পোস্টে লাইক দিয়ে কমেন্ট করুন এবং পাবলিকলি নিজের টাইমলাইনে শেয়ার করুন।",
+    instructions: [
+      "১. পোস্টে লাইক ও কমেন্ট দিন।",
+      "২. Share to Feed (Public) করুন।",
+      "৩. টাইমলাইনের শেয়ার করা পোস্টের স্ক্রিনশট জমা দিন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_fb_reels",
+    title: "Facebook Reels video 1 min watch, like , comment...",
+    platform: "facebook",
+    category: "Facebook Work",
+    reward: 0.50,
+    availableWorks: 3,
+    action: "রিলস ভিডিও ১ মিনিট দেখে লাইক ও কমেন্ট করুন",
+    description: "সম্পূর্ণ ১ মিনিট রিলসটি দেখুন, লাইক দিন এবং রিলেটেড কমেন্ট করুন।",
+    instructions: [
+      "১. রিলস ভিডিও লিংকে যান।",
+      "২. ১ মিনিট মনোযোগ দিয়ে দেখুন।",
+      "৩. লাইক ও কমেন্ট করুন।",
+      "৪. স্ক্রিনশট জমা দিন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_fb_review",
+    title: "Facebook Page Review",
+    platform: "facebook",
+    category: "Facebook Work",
+    reward: 1.50,
+    availableWorks: 2,
+    action: "ফেসবুক পেজে ৫ স্টার রেটিং ও পজিটিভ রিভিউ দিন",
+    description: "পেজের Reviews ট্যাবে যান, 'Do you recommend this Page?' এ 'Yes' চাপুন এবং সুন্দর রিভিউ লিখুন।",
+    instructions: [
+      "১. পেজের Reviews অপশনে যান।",
+      "২. Yes অপশনে ক্লিক করুন।",
+      "৩. ৫০ শব্দের ইতিবাচক রিভিউ লিখে পোস্ট করুন।",
+      "৪. রিভিউ পোস্টের স্পষ্ট স্ক্রিনশট আপলোড করুন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_insta_follow",
+    title: "Instagram Account Follow & 3 Posts Like",
+    platform: "instagram",
+    category: "Instagram Work",
+    reward: 0.35,
+    availableWorks: 2,
+    action: "ইনস্টাগ্রাম প্রোফাইল ফলো ও পোস্টে লাইক দিন",
+    description: "প্রোফাইল ফলো দিয়ে সাম্প্রতিক ৩টি ফটোতে লাভ রিঅ্যাক্ট দিন।",
+    instructions: [
+      "১. ইনস্টাগ্রাম লিংকে যান।",
+      "২. Follow বাটনে ক্লিক করুন।",
+      "৩. প্রথম ৩টি পোস্টে হার্ট রিঅ্যাক্ট দিন।",
+      "৪. স্ক্রিনশট তুলে জমা দিন।",
+    ],
+    targetUrl: "https://instagram.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_yt_watch",
+    title: "YouTube Video Watch 3 Min & Subscribe",
+    platform: "youtube",
+    category: "YouTube Work",
+    reward: 1.20,
+    availableWorks: 11,
+    action: "ভিডিও ৩ মিনিট দেখে সাবস্ক্রাইব করুন",
+    description: "ইউটিউব ভিডিওটি ৩ মিনিট দেখুন, লাইক দিন এবং চ্যানেল সাবস্ক্রাইব করে বেল আইকন বাজান।",
+    instructions: [
+      "১. ইউটিউব ভিডিও ওপেন করুন।",
+      "২. ন্যূনতম ৩ মিনিট শুনুন ও দেখুন।",
+      "৩. লাইক ও সাবস্ক্রাইব করুন।",
+      "৪. স্ক্রিনশট তুলে প্রুফ সাবমিট করুন।",
+    ],
+    targetUrl: "https://youtube.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_app_install",
+    title: "Apps Install & Open 2 Min",
+    platform: "apps",
+    category: "Apps Work",
+    reward: 2.50,
+    availableWorks: 1,
+    action: "প্লেস্টোর থেকে অ্যাপ ইনস্টল করে ২ মিনিট ব্যবহার করুন",
+    description: "অ্যাপটি ডাউনলোড ও ইনস্টল করে ২ মিনিট ওপেন রাখুন এবং হোম স্ক্রিনের স্ক্রিনশট নিন।",
+    instructions: [
+      "১. প্লেস্টোর লিংকে গিয়ে অ্যাপ ইনস্টল করুন।",
+      "২. অ্যাপ ওপেন করে ২ মিনিট ব্রাউজ করুন।",
+      "৩. ফোনে অ্যাপ ইনস্টল থাকা অবস্থার স্ক্রিনশট দিন।",
+    ],
+    targetUrl: "https://play.google.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_buysell_gmail",
+    title: "Gmail & facebook Buy - Sell",
+    platform: "buysell",
+    category: "Gmail & facebook Buy - Sell",
+    reward: 15.00,
+    availableWorks: 2,
+    action: "ভেরিফায়েড জিমেইল / ফেসবুক অ্যাকাউন্ট ট্রেড",
+    description: "পুরাতন ও সচল অ্যাকাউন্ট যাচাই ও ক্রয়-বিক্রয় সেবা। নির্দেশনা অনুযায়ী তথ্য সাবমিট করুন।",
+    instructions: [
+      "১. অ্যাকাউন্ট বয়স ন্যূনতম ৬ মাস হতে হবে।",
+      "২. টু-ফ্যাক্টর অথেনটিকেশন সক্রিয় থাকতে হবে।",
+      "৩. ফর্ম পূরণ করে আইডি জমা দিন।",
+    ],
+    targetUrl: "#",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_tt_like",
+    title: "TikTok Video Like & Share",
+    platform: "tiktok",
+    category: "TikTok Work",
+    reward: 0.30,
+    availableWorks: 8,
+    action: "ভিডিও লাইক ও কপি লিংক শেয়ার",
+    description: "টিকটক ভিডিওতে লাইক দিয়ে শেয়ার অপশন থেকে লিংক কপি করুন।",
+    instructions: [
+      "১. ভিডিও সম্পূর্ণ দেখুন।",
+      "২. লাইক বাটনে চাপ দিন।",
+      "৩. স্ক্রিনশট দিন।",
+    ],
+    targetUrl: "https://tiktok.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_tg_join",
+    title: "Telegram Channel Join",
+    platform: "telegram",
+    category: "Telegram Work",
+    reward: 0.25,
+    availableWorks: 5,
+    action: "টেলিগ্রাম চ্যানেলে জয়েন করুন",
+    description: "চ্যানেলে জয়েন করে মিউট না রেখে নোটিফিকেশন অন রাখুন এবং স্ক্রিনশট দিন।",
+    instructions: [
+      "১. টেলিগ্রাম লিংকে ক্লিক করুন।",
+      "২. Join Channel বাটনে চাপুন।",
+      "৩. জয়েনড অবস্থার স্ক্রিনশট তুলে সাবমিট করুন।",
+    ],
+    targetUrl: "https://telegram.org",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
 ];
 
 const initialSubmissions: TaskSubmission[] = [
@@ -529,6 +771,7 @@ export function useMockStore() {
   const [users, setUsers] = useState<UserProfile[]>(initialUsers);
   const [settings, setSettings] = useState<AdminSettings>(initialSettings);
   const [dailyCheckIn, setDailyCheckIn] = useState<DailyCheckInState>(initialCheckIn);
+  const [userSkillLevel, setUserSkillLevel] = useState<number>(1);
 
   // Initialize from LocalStorage
   useEffect(() => {
@@ -553,6 +796,8 @@ export function useMockStore() {
       if (savedTasks) setTasks(JSON.parse(savedTasks));
       const savedCheckIn = localStorage.getItem("digonto_daily_checkin");
       if (savedCheckIn) setDailyCheckIn(JSON.parse(savedCheckIn));
+      const savedSkill = localStorage.getItem("digonto_user_skill_level");
+      if (savedSkill) setUserSkillLevel(JSON.parse(savedSkill));
     } catch {
       // ignore
     }
@@ -1032,6 +1277,13 @@ export function useMockStore() {
     syncStorage("digonto_settings", updated);
   };
 
+  // 14. Skill Level
+  const unlockNextSkillLevel = () => {
+    const next = Math.min(userSkillLevel + 1, 3);
+    setUserSkillLevel(next);
+    syncStorage("digonto_user_skill_level", next);
+  };
+
   return {
     profile,
     packages,
@@ -1044,6 +1296,8 @@ export function useMockStore() {
     notifications,
     users,
     settings,
+    userSkillLevel,
+    unlockNextSkillLevel,
     submitTaskProof,
     submitDeposit,
     submitWithdrawal,
