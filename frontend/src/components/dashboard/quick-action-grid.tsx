@@ -84,10 +84,10 @@ export function QuickActionGrid() {
     {
       id: "daily-bonus",
       title: "ডেইলি লগইন বোনাস",
-      subtitle: "প্রতিদিন বোনাস নিন",
+      subtitle: "মিশন সেন্টার ও রিওয়ার্ড",
       icon: CalendarCheck2,
       color: "text-[#ea580c] bg-[#fff7ed]",
-      onClick: handleDailyBonus,
+      href: "/mission",
     },
     {
       id: "free-task",

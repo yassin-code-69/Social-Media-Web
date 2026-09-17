@@ -131,6 +131,22 @@ export interface NotificationItem {
   createdAt: string;
 }
 
+export interface DailyCheckInState {
+  currentDay: number; // 1 to 7
+  lastCheckInDate: string | null;
+  history: number[]; // array of completed day numbers, e.g. [1, 2]
+  rewards: number[]; // [5, 7, 10, 15, 20, 25, 30]
+  streakActive: boolean;
+}
+
+const initialCheckIn: DailyCheckInState = {
+  currentDay: 1,
+  lastCheckInDate: null,
+  history: [],
+  rewards: [5, 7, 10, 15, 20, 25, 30],
+  streakActive: true,
+};
+
 // Initial Mock Seed
 const initialProfile: UserProfile = {
   id: "user_1024",
@@ -512,6 +528,7 @@ export function useMockStore() {
   const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);
   const [users, setUsers] = useState<UserProfile[]>(initialUsers);
   const [settings, setSettings] = useState<AdminSettings>(initialSettings);
+  const [dailyCheckIn, setDailyCheckIn] = useState<DailyCheckInState>(initialCheckIn);
 
   // Initialize from LocalStorage
   useEffect(() => {
@@ -534,6 +551,8 @@ export function useMockStore() {
       if (savedPackages) setPackages(JSON.parse(savedPackages));
       const savedTasks = localStorage.getItem("digonto_tasks");
       if (savedTasks) setTasks(JSON.parse(savedTasks));
+      const savedCheckIn = localStorage.getItem("digonto_daily_checkin");
+      if (savedCheckIn) setDailyCheckIn(JSON.parse(savedCheckIn));
     } catch {
       // ignore
     }
@@ -851,6 +870,113 @@ export function useMockStore() {
     };
     setProfile(updatedProfile);
     syncStorage("digonto_profile", updatedProfile);
+
+    // If purchasing paid package, reset 7-day daily check-in streak
+    if (pkg.price > 0 || !pkg.name.includes("ফ্রি")) {
+      const resetCheckIn: DailyCheckInState = {
+        currentDay: 1,
+        lastCheckInDate: null,
+        history: [],
+        rewards: [5, 7, 10, 15, 20, 25, 30],
+        streakActive: true,
+      };
+      setDailyCheckIn(resetCheckIn);
+      syncStorage("digonto_daily_checkin", resetCheckIn);
+    }
+  };
+
+  // 10b. Perform Daily Check-In (Premium Only, 7 Days)
+  const performDailyCheckIn = (): { success: boolean; amount?: number; message: string } => {
+    const isPremium =
+      Boolean(profile.packageName) &&
+      !profile.packageName.includes("ফ্রি") &&
+      profile.packageStatus === "ACTIVE";
+
+    if (!isPremium) {
+      return {
+        success: false,
+        message: "এটি শুধুমাত্র প্রিমিয়াম মেম্বারদের জন্য! প্যাকেজ কিনলে ৭ দিন পর্যন্ত দৈনিক লগইন বোনাস পাবেন।",
+      };
+    }
+
+    const todayStr = new Date().toISOString().split("T")[0];
+    if (dailyCheckIn.lastCheckInDate === todayStr) {
+      return {
+        success: false,
+        message: "আপনি আজকের রিওয়ার্ড ইতিমধ্যে গ্রহণ করেছেন! আগামীকাল আবার চেক-ইন করুন।",
+      };
+    }
+
+    if (dailyCheckIn.currentDay > 7 || dailyCheckIn.history.length >= 7) {
+      return {
+        success: false,
+        message: "আপনার ৭ দিনের দৈনিক বোনাস সাইকেল সম্পন্ন হয়েছে! নতুন প্যাকেজ কিনে আবার ৭ দিনের বোনাস আনলক করুন।",
+      };
+    }
+
+    const dayIdx = Math.min(dailyCheckIn.currentDay - 1, 6);
+    const rewardAmount = dailyCheckIn.rewards[dayIdx] || 5;
+
+    const newBalance = profile.balance + rewardAmount;
+    const newTotalEarned = profile.totalEarned + rewardAmount;
+    const updatedProfile = {
+      ...profile,
+      balance: newBalance,
+      totalEarned: newTotalEarned,
+    };
+    setProfile(updatedProfile);
+    syncStorage("digonto_profile", updatedProfile);
+
+    const newTx: TransactionItem = {
+      id: `tx_${Date.now()}`,
+      type: "BONUS",
+      direction: "CREDIT",
+      amount: rewardAmount,
+      description: `মিশন সেন্টার: দৈনিক লগইন বোনাস (দিন ${dailyCheckIn.currentDay})`,
+      balanceAfter: newBalance,
+      createdAt: "এইমাত্র",
+    };
+    const updatedTx = [newTx, ...transactions];
+    setTransactions(updatedTx);
+    syncStorage("digonto_transactions", updatedTx);
+
+    const nextDay = dailyCheckIn.currentDay + 1;
+    const updatedCheckIn: DailyCheckInState = {
+      ...dailyCheckIn,
+      currentDay: nextDay,
+      lastCheckInDate: todayStr,
+      history: [...dailyCheckIn.history, dailyCheckIn.currentDay],
+    };
+    setDailyCheckIn(updatedCheckIn);
+    syncStorage("digonto_daily_checkin", updatedCheckIn);
+
+    const newNotif: NotificationItem = {
+      id: `notif_${Date.now()}`,
+      title: "দৈনিক লগইন বোনাস যোগ হয়েছে!",
+      message: `অভিনন্দন! মিশন সেন্টারের দিন ${dailyCheckIn.currentDay}-এর ৳${rewardAmount} আপনার মূল ব্যালেন্সে যোগ হয়েছে।`,
+      type: "FINANCE",
+      read: false,
+      createdAt: "এইমাত্র",
+    };
+    setNotifications([newNotif, ...notifications]);
+
+    return {
+      success: true,
+      amount: rewardAmount,
+      message: `অভিনন্দন! আপনি দিন ${dailyCheckIn.currentDay}-এর ৳${rewardAmount} রিওয়ার্ড পেয়েছেন!`,
+    };
+  };
+
+  const resetDailyCheckInForTest = () => {
+    const resetState: DailyCheckInState = {
+      currentDay: 1,
+      lastCheckInDate: null,
+      history: [],
+      rewards: [5, 7, 10, 15, 20, 25, 30],
+      streakActive: true,
+    };
+    setDailyCheckIn(resetState);
+    syncStorage("digonto_daily_checkin", resetState);
   };
 
   // 11. Task Management CRUD
@@ -934,6 +1060,9 @@ export function useMockStore() {
     createTask,
     updateTask,
     deleteTask,
+    dailyCheckIn,
+    performDailyCheckIn,
+    resetDailyCheckInForTest,
     createPackage,
     updatePackage,
     deletePackage,

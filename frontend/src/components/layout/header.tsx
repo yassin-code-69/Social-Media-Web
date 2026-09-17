@@ -17,6 +17,7 @@ import {
   User,
   ShieldAlert,
   ChevronRight,
+  CalendarCheck2,
 } from "lucide-react";
 
 export function Header() {
@@ -24,6 +25,7 @@ export function Header() {
 
   const menuLinks = [
     { label: "হোম ড্যাশবোর্ড", href: "/", icon: Home },
+    { label: "মিশন সেন্টার (লগইন বোনাস)", href: "/mission", icon: CalendarCheck2 },
     { label: "টাস্ক তালিকা", href: "/tasks", icon: CheckSquare },
     { label: "দিগন্ত প্যাকেজ", href: "/packages", icon: Package },
     { label: "মাই ওয়ালেট", href: "/wallet", icon: Wallet },
