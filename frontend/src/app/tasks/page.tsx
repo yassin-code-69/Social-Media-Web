@@ -227,14 +227,13 @@ export default function TasksPage() {
             </div>
 
             {/* Create Work Button */}
-            <button
-              type="button"
-              onClick={() => setCreateWorkModalOpen(true)}
+            <Link
+              href="/create"
               className="flex items-center gap-1.5 bg-gradient-to-r from-[#1e5eb3] to-[#0284c7] hover:from-[#174b8f] hover:to-[#0369a1] text-white text-xs font-bold py-1.5 px-3 rounded-xl shadow-xs active:scale-95 transition-all font-bengali"
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>কাজ দিন</span>
-            </button>
+            </Link>
           </div>
 
           {/* Global Toast Success Message */}

@@ -100,10 +100,10 @@ export function QuickActionGrid() {
     {
       id: "job-post",
       title: "জব পোস্ট",
-      subtitle: "নতুন কাজ খুঁজুন",
+      subtitle: "নতুন কাজ দিন ও কর্মী নিন",
       icon: Briefcase,
       color: "text-[#0284c7] bg-[#f0f9ff]",
-      href: "/tasks",
+      href: "/create",
     },
     {
       id: "lucky-spin",

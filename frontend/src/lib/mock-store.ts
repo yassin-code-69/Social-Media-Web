@@ -59,6 +59,10 @@ export interface TaskItem {
   targetUrl: string;
   requiredPackage: string;
   requiresScreenshot: boolean;
+  creatorId?: string;
+  completedWorkers?: number;
+  status?: "ACTIVE" | "COMPLETED" | "PAUSED";
+  createdAt?: string;
 }
 
 export interface TaskSubmission {
