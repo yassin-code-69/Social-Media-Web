@@ -25,6 +25,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Crown,
+  PenTool,
 } from "lucide-react";
 import { useMockStore, TaskItem, TaskSubmission } from "@/lib/mock-store";
 import { Header } from "@/components/layout/header";
@@ -119,9 +120,21 @@ export default function TasksPage() {
       iconType: "telegram",
       availableCount: tasks.filter((t) => t.platform === "telegram").length || 5,
     },
+    {
+      key: "content",
+      name: "Content Writing Work (লিখে আয়)",
+      iconType: "content",
+      availableCount: tasks.filter((t) => t.platform === "content").length || 3,
+      route: "/content-writing",
+    },
   ];
 
   const openCategory = (key: string) => {
+    const found = categoriesList.find((c) => c.key === key);
+    if ((found as any)?.route) {
+      router.push((found as any).route);
+      return;
+    }
     setSelectedCategoryKey(key);
     setCurrentView("category_tasks");
   };
@@ -472,6 +485,11 @@ export default function TasksPage() {
                         {cat.iconType === "telegram" && (
                           <div className="w-full h-full bg-[#229ed9] flex items-center justify-center text-white font-bold">
                             ✈
+                          </div>
+                        )}
+                        {cat.iconType === "content" && (
+                          <div className="w-full h-full bg-gradient-to-tr from-[#8b5cf6] to-[#3b82f6] flex items-center justify-center text-white">
+                            <PenTool className="w-6 h-6" />
                           </div>
                         )}
                       </div>

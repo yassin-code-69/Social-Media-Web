@@ -594,6 +594,60 @@ const initialTasks: TaskItem[] = [
     requiredPackage: "সকল প্যাকেজ",
     requiresScreenshot: true,
   },
+  {
+    id: "task_content_fb_income",
+    title: "দিগন্ত থেকে অনলাইন ইনকাম করার বাস্তব অভিজ্ঞতা লিখুন",
+    platform: "content",
+    category: "Facebook Work",
+    reward: 20,
+    availableWorks: 15,
+    action: "ফেসবুক পোস্ট লিখে লিংক ও স্ক্রিনশট দিন",
+    description: "দিগন্ত ওয়েবসাইটে আপনার কাজ করার অভিজ্ঞতা, পেমেন্ট পাওয়ার প্রমাণ বা টাস্ক করার নিয়ম নিয়ে ফেসবুকে অন্তত ১০০ শব্দের একটি তথ্যবহুল পোস্ট লিখুন এবং সাবমিট করুন।",
+    instructions: [
+      "১. ফেসবুক প্রোফাইল বা যেকোনো সক্রিয় আর্নিং/জব গ্রুপে পোস্ট লিখুন।",
+      "২. লেখায় দিগন্ত প্ল্যাটফর্মের কাজের নিয়ম ও সুবিধার কথা উল্লেখ করুন।",
+      "৩. পোস্টের দৈর্ঘ্য ন্যূনতম ১০০ শব্দ হতে হবে।",
+      "৪. পোস্টের লিংক এবং স্ক্রিনশট সাবমিট বক্সে জমা দিন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_content_fb_refer",
+    title: "দিগন্তে রেফার করে বেশি ইনকাম করার কৌশল নিয়ে পোস্ট",
+    platform: "content",
+    category: "Facebook Work",
+    reward: 25,
+    availableWorks: 10,
+    action: "রেফারেল গাইড ও টিপস নিয়ে পোস্ট করুন",
+    description: "কীভাবে দিগন্তে রেফার করে আনলিমিটেড ইনকাম করা যায়, সে সম্পর্কে টিপস দিয়ে একটি আকর্ষণীয় ফেসবুক পোস্ট তৈরি করুন।",
+    instructions: [
+      "১. নিজের রেফার কোডসহ ফেসবুকে পোস্ট তৈরি করুন।",
+      "২. বন্ধুদের দিগন্তে জয়েন করার নিয়ম বুঝিয়ে লিখুন।",
+      "৩. পোস্টের লিংক ও প্রুফ স্ক্রিনশট সাবমিট করুন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
+  {
+    id: "task_content_fb_spin",
+    title: "দিগন্তের ডেইলি লাকি স্পিন ও বোনাস নিয়ে রিভিউ লিখুন",
+    platform: "content",
+    category: "Facebook Work",
+    reward: 15,
+    availableWorks: 20,
+    action: "স্পিন ও মিশন বোনাস সম্পর্কে পোস্ট লিখুন",
+    description: "দিগন্তের দৈনিক লাকি স্পিন ও ৭ দিনের মিশন বোনাস কীভাবে কাজ করে তা নিয়ে ফেসবুকে বিস্তারিত পোস্ট শেয়ার করুন।",
+    instructions: [
+      "১. স্পিন বা বোনাস পাওয়ার স্ক্রিনশট যুক্ত করে পোস্ট লিখুন।",
+      "২. পোস্ট পাবলিশ করে লিংক ও প্রুফ জমা দিন।",
+    ],
+    targetUrl: "https://facebook.com",
+    requiredPackage: "সকল প্যাকেজ",
+    requiresScreenshot: true,
+  },
 ];
 
 const initialSubmissions: TaskSubmission[] = [
@@ -622,6 +676,19 @@ const initialSubmissions: TaskSubmission[] = [
     userNote: "পেজ ফলো করেছি।",
     status: "PENDING",
     submittedAt: "17 Sep 2026, 11:15 AM",
+  },
+  {
+    id: "sub_cnt_101",
+    taskId: "task_content_fb_income",
+    taskTitle: "দিগন্ত থেকে অনলাইন ইনকাম করার বাস্তব অভিজ্ঞতা লিখুন",
+    userId: "user_1024",
+    userName: "তামিম ইসলাম",
+    platform: "content",
+    reward: 20,
+    screenshotUrl: "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80",
+    userNote: "[লিংক: https://facebook.com/groups/earningbd/posts/10293847]\n\nদিগন্ত ওয়েবসাইটের মাধ্যমে ঘরে বসেই মোবাইল দিয়ে মাইক্রোজব ও ফেসবুক পোস্ট লিখে চমৎকার ইনকাম করা যায়। এডমিনরা অত্যন্ত দ্রুত পেমেন্ট অনুমোদন করেন।",
+    status: "APPROVED",
+    submittedAt: "18 Sep 2026, 03:40 PM",
   },
 ];
 
@@ -873,6 +940,51 @@ export function useMockStore() {
       createdAt: "এইমাত্র",
     };
     setNotifications([newNotif, ...notifications]);
+  };
+
+  // 1b. Submit Content Writing Post
+  const submitContentWritingPost = (params: {
+    taskId?: string;
+    topicTitle: string;
+    postContent: string;
+    socialUrl?: string;
+    screenshotUrl?: string;
+    reward?: number;
+  }) => {
+    const reward = params.reward || 20;
+    const newSub: TaskSubmission = {
+      id: `sub_cnt_${Date.now()}`,
+      taskId: params.taskId || `task_content_${Date.now()}`,
+      taskTitle: params.topicTitle,
+      userId: profile.id,
+      userName: profile.name,
+      platform: "content",
+      reward: reward,
+      screenshotUrl:
+        params.screenshotUrl ||
+        "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80",
+      userNote: `[ফেসবুক পোস্ট লিংক: ${params.socialUrl || "লিংক প্রদান করা হয়নি"}]\n\n${params.postContent}`,
+      status: "PENDING",
+      submittedAt: "এইমাত্র",
+    };
+
+    const updated = [newSub, ...submissions];
+    setSubmissions(updated);
+    syncStorage("digonto_submissions", updated);
+
+    const newNotif: NotificationItem = {
+      id: `notif_${Date.now()}`,
+      title: "কন্টেন্ট রাইটিং জমা হয়েছে!",
+      message: `"${params.topicTitle}" সফলভাবে সাবমিট হয়েছে। এডমিন রিভিউ শেষে আপনার একাউন্টে ৳${reward} যোগ হবে।`,
+      type: "TASK",
+      read: false,
+      createdAt: "এইমাত্র",
+    };
+    const updatedNotifs = [newNotif, ...notifications];
+    setNotifications(updatedNotifs);
+    syncStorage("digonto_notifications", updatedNotifs);
+
+    return { success: true, submissionId: newSub.id };
   };
 
   // 2. Submit Deposit
@@ -1387,6 +1499,7 @@ export function useMockStore() {
     userSkillLevel,
     unlockNextSkillLevel,
     submitTaskProof,
+    submitContentWritingPost,
     submitDeposit,
     submitWithdrawal,
     approveSubmission,

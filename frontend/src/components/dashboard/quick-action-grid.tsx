@@ -149,11 +149,11 @@ export function QuickActionGrid() {
     },
     {
       id: "content-writing",
-      title: "কনটেন্ট রাইটিং",
+      title: "কন্টেন্ট রাইটিং",
       subtitle: "লিখে আয় করুন",
       icon: PenTool,
       color: "text-[#8b5cf6] bg-[#f5f3ff]",
-      href: "/tasks",
+      href: "/content-writing",
     },
     {
       id: "video-content",
