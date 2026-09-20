@@ -22,6 +22,7 @@ import {
   Disc,
   Trophy,
   PenTool,
+  PlaySquare,
 } from "lucide-react";
 
 export function Header() {
@@ -33,6 +34,7 @@ export function Header() {
     { label: "দৈনিক লাকি স্পিন", href: "/spin", icon: Disc },
     { label: "লিডারবোর্ড (Top Earners)", href: "/leaderboard", icon: Trophy },
     { label: "কন্টেন্ট রাইটিং (লিখে আয়)", href: "/content-writing", icon: PenTool },
+    { label: "ভিডিও কনটেন্ট প্রজেক্ট", href: "/video-content", icon: PlaySquare },
     { label: "টাস্ক তালিকা", href: "/tasks", icon: CheckSquare },
     { label: "নতুন কাজ দিন (Create Job)", href: "/create", icon: PlusCircle },
     { label: "দিগন্ত প্যাকেজ", href: "/packages", icon: Package },

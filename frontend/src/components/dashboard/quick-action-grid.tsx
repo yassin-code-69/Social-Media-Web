@@ -161,7 +161,7 @@ export function QuickActionGrid() {
       subtitle: "দিগন্তের জন্য ভিডিও বানিয়ে আয়",
       icon: Video,
       color: "text-[#dc2626] bg-[#fef2f2]",
-      href: "/tasks",
+      href: "/video-content",
     },
     {
       id: "offerwall",

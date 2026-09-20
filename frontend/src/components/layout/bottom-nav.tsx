@@ -11,6 +11,7 @@ import {
   Wallet,
   Gift,
   User,
+  PlaySquare,
 } from "lucide-react";
 
 export function BottomNav() {
@@ -21,6 +22,7 @@ export function BottomNav() {
     { id: "tasks", label: "টাস্ক", href: "/tasks", icon: CheckSquare },
     { id: "levels", label: "দিগন্ত স্তর", href: "/packages", icon: Crown },
     { id: "referral", label: "রেফারেল", href: "/referral", icon: Users },
+    { id: "video", label: "ভিডিও কনটেন্ট", href: "/video-content", icon: PlaySquare },
     { id: "icash", label: "I Cash", href: "/wallet", icon: Wallet },
     { id: "gift", label: "গিফট কোড", href: "/packages", icon: Gift },
     { id: "profile", label: "প্রোফাইল", href: "/profile", icon: User },
