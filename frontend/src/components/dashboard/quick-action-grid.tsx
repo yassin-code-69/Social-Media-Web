@@ -177,7 +177,7 @@ export function QuickActionGrid() {
       subtitle: "পড়ে আয় করুন",
       icon: BookOpen,
       color: "text-[#0284c7] bg-[#f0f9ff]",
-      href: "/tasks",
+      href: "/articles",
     },
     {
       id: "captcha",

@@ -25,6 +25,7 @@ import {
   PlaySquare,
   Flame,
   ClipboardCheck,
+  BookOpen,
 } from "lucide-react";
 
 export function Header() {
@@ -39,6 +40,7 @@ export function Header() {
     { label: "ভিডিও কনটেন্ট প্রজেক্ট", href: "/video-content", icon: PlaySquare },
     { label: "অফারওয়াল (স্পেশাল অফার)", href: "/offerwall", icon: Flame },
     { label: "সার্ভে ও জরিপ (Survey)", href: "/survey", icon: ClipboardCheck },
+    { label: "আর্টিকেল পড়া (Read & Earn)", href: "/articles", icon: BookOpen },
     { label: "টাস্ক তালিকা", href: "/tasks", icon: CheckSquare },
     { label: "নতুন কাজ দিন (Create Job)", href: "/create", icon: PlusCircle },
     { label: "দিগন্ত প্যাকেজ", href: "/packages", icon: Package },
