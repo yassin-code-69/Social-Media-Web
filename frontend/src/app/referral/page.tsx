@@ -283,6 +283,34 @@ export default function ReferralPage() {
           </div>
         </div>
 
+        {/* Monthly Salary & Incentive Promo Banner */}
+        <div className="px-4 mt-3">
+          <Link
+            href="/monthly-salary"
+            className="p-3 bg-gradient-to-r from-[#0b2654] via-[#1e5eb3] to-[#0284c7] text-white rounded-2xl shadow-sm flex items-center justify-between gap-2.5 hover:shadow-md transition-all active:scale-98"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold flex-shrink-0 shadow-sm">
+                <Crown className="w-5 h-5 fill-slate-950" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <h4 className="text-xs font-bold text-white font-bengali leading-tight">
+                    মাসিক স্যালারি ও iPhone গিফট
+                  </h4>
+                  <span className="bg-amber-400 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded-full">
+                    NEW
+                  </span>
+                </div>
+                <p className="text-[10px] text-sky-100 font-bengali mt-0.5 truncate">
+                  টিম বড় করে প্রতি মাসে স্যালারি ও ইনসেনটিভ বোনাস জিতে নিন!
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-white/80 shrink-0" />
+          </Link>
+        </div>
+
         {/* ─── NAVIGATION TABS ─── */}
         <div className="px-4 mt-3">
           <div className="grid grid-cols-3 gap-1 bg-white p-1 rounded-2xl shadow-sm border border-slate-200/80">

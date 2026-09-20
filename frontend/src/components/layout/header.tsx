@@ -26,6 +26,7 @@ import {
   Flame,
   ClipboardCheck,
   BookOpen,
+  DollarSign,
 } from "lucide-react";
 
 export function Header() {
@@ -48,6 +49,7 @@ export function Header() {
     { label: "রিচার্জ / ডিপোজিট", href: "/deposit", icon: ArrowDownLeft },
     { label: "টাকা উত্তোলন (Withdraw)", href: "/withdraw", icon: ArrowUpRight },
     { label: "রেফারেল ও টিম", href: "/referral", icon: Users },
+    { label: "মাসিক স্যালারি (Monthly Salary)", href: "/monthly-salary", icon: DollarSign },
     { label: "লেনদেন হিস্ট্রি", href: "/history", icon: Clock },
     { label: "নোটিফিকেশন", href: "/notifications", icon: Bell },
     { label: "প্রোফাইল সেটিংস", href: "/profile", icon: User },
