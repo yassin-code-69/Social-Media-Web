@@ -23,6 +23,7 @@ import {
   Trophy,
   PenTool,
   PlaySquare,
+  Flame,
 } from "lucide-react";
 
 export function Header() {
@@ -35,6 +36,7 @@ export function Header() {
     { label: "লিডারবোর্ড (Top Earners)", href: "/leaderboard", icon: Trophy },
     { label: "কন্টেন্ট রাইটিং (লিখে আয়)", href: "/content-writing", icon: PenTool },
     { label: "ভিডিও কনটেন্ট প্রজেক্ট", href: "/video-content", icon: PlaySquare },
+    { label: "অফারওয়াল (স্পেশাল অফার)", href: "/offerwall", icon: Flame },
     { label: "টাস্ক তালিকা", href: "/tasks", icon: CheckSquare },
     { label: "নতুন কাজ দিন (Create Job)", href: "/create", icon: PlusCircle },
     { label: "দিগন্ত প্যাকেজ", href: "/packages", icon: Package },

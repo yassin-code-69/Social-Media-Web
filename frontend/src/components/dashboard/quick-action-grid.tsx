@@ -169,7 +169,7 @@ export function QuickActionGrid() {
       subtitle: "বেশি কাজ, বেশি আয়",
       icon: FileCheck,
       color: "text-[#059669] bg-[#ecfdf5]",
-      href: "/tasks",
+      href: "/offerwall",
     },
     {
       id: "article-reading",
