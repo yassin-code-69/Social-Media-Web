@@ -27,6 +27,7 @@ import {
   ClipboardCheck,
   BookOpen,
   DollarSign,
+  TrendingUp,
 } from "lucide-react";
 
 export function Header() {
@@ -46,6 +47,7 @@ export function Header() {
     { label: "নতুন কাজ দিন (Create Job)", href: "/create", icon: PlusCircle },
     { label: "দিগন্ত প্যাকেজ", href: "/packages", icon: Package },
     { label: "মাই ওয়ালেট", href: "/wallet", icon: Wallet },
+    { label: "I Cash (বিনিয়োগ ও মুনাফা)", href: "/icash", icon: TrendingUp },
     { label: "রিচার্জ / ডিপোজিট", href: "/deposit", icon: ArrowDownLeft },
     { label: "টাকা উত্তোলন (Withdraw)", href: "/withdraw", icon: ArrowUpRight },
     { label: "রেফারেল ও টিম", href: "/referral", icon: Users },
