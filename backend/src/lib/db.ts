@@ -12,6 +12,7 @@ const client = postgres(connectionString, {
   max: env.NODE_ENV === "production" ? 10 : 5,
   idle_timeout: 20,
   connect_timeout: 10,
+  ssl: connectionString.includes("supabase.com") ? "require" : undefined,
   onnotice: () => {}, // suppress notice spam
 });
 
