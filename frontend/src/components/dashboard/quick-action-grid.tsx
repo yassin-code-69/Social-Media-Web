@@ -109,7 +109,7 @@ export function QuickActionGrid() {
       subtitle: "অতিরিক্ত ইনকাম",
       icon: CalendarDays,
       color: "text-[#ec4899] bg-[#fdf2f8]",
-      href: "/packages",
+      href: "/monthly-salary",
     },
     {
       id: "digonto-level",
@@ -133,7 +133,7 @@ export function QuickActionGrid() {
       subtitle: "সহজ পেমেন্ট সল্যুশন",
       icon: Wallet,
       color: "text-[#2563eb] bg-[#eff6ff]",
-      href: "/wallet",
+      href: "/icash",
     },
     {
       id: "gift-code",

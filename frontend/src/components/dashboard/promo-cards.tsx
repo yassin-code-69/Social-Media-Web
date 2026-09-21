@@ -1,13 +1,17 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Trophy, Users, ArrowRight, Share2 } from "lucide-react";
 
 export function PromoCards() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full">
       {/* Left Card: Monthly Bonus */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#fed7aa] via-[#fde047] to-[#f59e0b] p-3.5 shadow-sm border border-amber-200 flex flex-col justify-between min-h-[118px]">
+      <Link
+        href="/monthly-salary"
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#fed7aa] via-[#fde047] to-[#f59e0b] p-3.5 shadow-sm border border-amber-200 flex flex-col justify-between min-h-[118px] group hover:shadow-md transition-all block"
+      >
         {/* Top Content */}
         <div className="flex items-start justify-between z-10">
           <div className="flex items-center gap-2">
@@ -32,13 +36,10 @@ export function PromoCards() {
 
         {/* Bottom Link & Gift Illustration */}
         <div className="flex items-end justify-between z-10 mt-2">
-          <button
-            type="button"
-            className="text-xs font-bold text-slate-900 inline-flex items-center gap-1 hover:underline"
-          >
+          <div className="text-xs font-bold text-slate-900 inline-flex items-center gap-1 group-hover:underline">
             <span>বিস্তারিত দেখুন</span>
             <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
-          </button>
+          </div>
 
           {/* Gift Box Graphic */}
           <div className="relative w-14 h-12 flex-shrink-0 -mb-1">
@@ -63,7 +64,7 @@ export function PromoCards() {
             </svg>
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* Right Card: Refer a Friend */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#064e3b] via-[#065f46] to-[#047857] text-white p-3.5 shadow-sm border border-emerald-800 flex flex-col justify-between min-h-[118px]">
