@@ -9,8 +9,11 @@ const envSchema = z.object({
 
   // Supabase
   SUPABASE_URL: z.string().default("https://placeholder.supabase.co"),
+  SUPABASE_PUBLISHABLE_KEY: z.string().optional(),
   SUPABASE_ANON_KEY: z.string().default("placeholder_anon_key"),
+  SUPABASE_SECRET_KEY: z.string().optional(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().default("placeholder_service_role_key"),
+  SUPABASE_JWKS_URL: z.string().optional(),
 
   // Cloudinary
   CLOUDINARY_CLOUD_NAME: z.string().default("placeholder_cloud_name"),
@@ -25,7 +28,19 @@ const envSchema = z.object({
 });
 
 const parseEnv = () => {
-  const result = envSchema.safeParse(process.env);
+  const rawEnv = {
+    ...process.env,
+    SUPABASE_ANON_KEY:
+      process.env.SUPABASE_ANON_KEY ||
+      process.env.SUPABASE_PUBLISHABLE_KEY ||
+      "placeholder_anon_key",
+    SUPABASE_SERVICE_ROLE_KEY:
+      process.env.SUPABASE_SERVICE_ROLE_KEY ||
+      process.env.SUPABASE_SECRET_KEY ||
+      "placeholder_service_role_key",
+  };
+
+  const result = envSchema.safeParse(rawEnv);
   if (!result.success) {
     console.error("❌ Invalid environment variables:", result.error.format());
     if (process.env.NODE_ENV === "production") {
