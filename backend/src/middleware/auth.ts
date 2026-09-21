@@ -1,6 +1,9 @@
 import { Context, Next } from "hono";
+import { eq } from "drizzle-orm";
 import { UnauthorizedError } from "@/shared/errors/app-error";
 import { supabaseAdmin } from "@/lib/supabase";
+import { db } from "@/lib/db";
+import { profiles } from "@/db/schema";
 import { env } from "@/config/env";
 import { logger } from "@/lib/logger";
 
@@ -20,7 +23,7 @@ export const requireAuth = async (c: Context, next: Next) => {
 
   const token = authHeader.replace("Bearer ", "").trim();
 
-  // Development mock bypass if token starts with "mock_" or "test_"
+  // Development mock bypass if token starts with "mock_" or "test_" or "dev_admin_token"
   if (env.NODE_ENV === "development" && (token.startsWith("mock_") || token === "dev_admin_token")) {
     const isMockAdmin = token === "dev_admin_token";
     const mockUser: AuthenticatedUser = {
@@ -40,11 +43,17 @@ export const requireAuth = async (c: Context, next: Next) => {
       throw new UnauthorizedError("লগইন সেশনের মেয়াদ শেষ হয়েছে, পুনরায় লগইন করুন");
     }
 
+    const [profile] = await db
+      .select({ role: profiles.role, displayName: profiles.displayName })
+      .from(profiles)
+      .where(eq(profiles.id, data.user.id))
+      .limit(1);
+
     const user: AuthenticatedUser = {
       id: data.user.id,
       email: data.user.email || "",
-      role: (data.user.user_metadata?.role as any) || "USER",
-      displayName: data.user.user_metadata?.display_name || data.user.email,
+      role: (profile?.role as any) || (data.user.user_metadata?.role as any) || "USER",
+      displayName: profile?.displayName || data.user.user_metadata?.display_name || data.user.email,
     };
 
     c.set("user", user);

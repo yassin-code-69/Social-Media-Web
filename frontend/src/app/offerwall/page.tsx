@@ -52,9 +52,7 @@ export default function OfferwallPage() {
   // Selected Offer Modal
   const [selectedOffer, setSelectedOffer] = useState<OfferItem | null>(null);
   const [userProofNote, setUserProofNote] = useState("");
-  const [proofScreenshot, setProofScreenshot] = useState(
-    "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80"
-  );
+  const [proofScreenshot, setProofScreenshot] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);

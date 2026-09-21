@@ -3,22 +3,30 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, ArrowRight, AlertCircle } from "lucide-react";
+import { authApi } from "@/lib/api-client";
 
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("tamim.islam@example.com");
-  const [password, setPassword] = useState("••••••••");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    setErrorMessage(null);
+
+    try {
+      await authApi.login(identifier, password);
       router.push("/");
-    }, 600);
+    } catch (err: any) {
+      setErrorMessage(err.message || "লগইন করতে ব্যর্থ হয়েছে। তথ্য যাচাই করুন।");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,6 +49,14 @@ export default function LoginPage() {
           </p>
         </div>
 
+        {/* Error Alert */}
+        {errorMessage && (
+          <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-xs text-rose-700">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
@@ -54,8 +70,8 @@ export default function LoginPage() {
               <input
                 type="text"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="017XXXXXXXX বা email@domain.com"
                 className="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1e5eb3] focus:bg-white transition-all text-slate-900 font-sans"
               />

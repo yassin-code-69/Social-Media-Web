@@ -1,122 +1,137 @@
 import { Hono } from "hono";
 import { z } from "zod";
+import { eq, sql } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { packages, packagePurchases } from "@/db/schema";
 import { apiSuccess } from "@/shared/responses/api-response";
 import { requireAuth } from "@/middleware/auth";
 import { serializeMoney } from "@/shared/utils/money";
+import { BadRequestError, NotFoundError } from "@/shared/errors/app-error";
 import { AppEnv } from "@/types/context";
 
 export const packagesRouter = new Hono<AppEnv>();
 
-// Static fallback seed for local development / initial state
-const defaultPackages = [
-  {
-    id: "pkg_free",
-    name: "ফ্রি ট্রায়াল",
-    priceMinor: 0n,
-    validityDays: 7,
-    dailyTaskLimit: 2,
-    dailyRewardLimitMinor: 2000n, // ৳20.00
-    referralBonusPercent: 5,
-    colorGradient: "from-slate-500 to-slate-700",
-    features: ["দৈনিক ২টি টাস্ক", "২৪ ঘণ্টার মধ্যে উইথড্র", "বেসিক সাপোর্ট", "৭ দিন মেয়াদ"],
-  },
-  {
-    id: "pkg_bronze",
-    name: "ব্রোঞ্জ প্যাকেজ",
-    priceMinor: 50000n, // ৳500.00
-    validityDays: 30,
-    dailyTaskLimit: 5,
-    dailyRewardLimitMinor: 6000n, // ৳60.00
-    referralBonusPercent: 10,
-    colorGradient: "from-amber-700 to-amber-900",
-    features: ["দৈনিক ৫টি টাস্ক", "দ্রুত সাপোর্ট", "রেফারেল কমিশন", "৩০ দিন মেয়াদ"],
-  },
-  {
-    id: "pkg_silver",
-    name: "সিলভার প্যাকেজ",
-    priceMinor: 100000n, // ৳1,000.00
-    validityDays: 30,
-    dailyTaskLimit: 10,
-    dailyRewardLimitMinor: 14000n, // ৳140.00
-    referralBonusPercent: 15,
-    colorGradient: "from-slate-400 to-slate-600",
-    features: ["দৈনিক ১০টি টাস্ক", "অগ্রাধিকার উইথড্রয়াল", "উচ্চ আয়ের কাজ", "৩০ দিন মেয়াদ"],
-  },
-  {
-    id: "pkg_gold",
-    name: "গোল্ড প্যাকেজ",
-    priceMinor: 200000n, // ৳2,000.00
-    validityDays: 45,
-    dailyTaskLimit: 20,
-    dailyRewardLimitMinor: 30000n, // ৳300.00
-    referralBonusPercent: 20,
-    isPopular: true,
-    colorGradient: "from-amber-500 to-yellow-600",
-    features: ["দৈনিক ২০টি টাস্ক", "ইনস্ট্যান্ট পেমেন্ট রিকোয়েস্ট", "ভিআইপি ব্যাজ ও বোনাস", "৪৫ দিন মেয়াদ"],
-  },
-  {
-    id: "pkg_platinum",
-    name: "প্লাটিনাম প্যাকেজ",
-    priceMinor: 500000n, // ৳5,000.00
-    validityDays: 60,
-    dailyTaskLimit: 45,
-    dailyRewardLimitMinor: 75000n, // ৳750.00
-    referralBonusPercent: 25,
-    colorGradient: "from-emerald-600 to-teal-800",
-    features: ["দৈনিক ৪৫টি টাস্ক", "প্রিমিয়াম সার্ভে ও ভিডিও", "সর্বোচ্চ রেফারেল বেনিফিট", "৬০ দিন মেয়াদ"],
-  },
-];
-
+// GET /api/v1/packages - Fetch all active packages from DB
 packagesRouter.get("/", async (c) => {
-  const formatted = defaultPackages.map((p) => ({
-    ...p,
+  const allPackages = await db
+    .select()
+    .from(packages)
+    .where(eq(packages.status, "ACTIVE"))
+    .orderBy(packages.priceMinor);
+
+  const formatted = allPackages.map((p) => ({
+    id: p.id,
+    name: p.name,
+    priceMinor: p.priceMinor.toString(),
     price: serializeMoney(p.priceMinor),
+    validityDays: p.validityDays,
+    dailyTaskLimit: p.dailyTaskLimit,
+    dailyRewardLimitMinor: p.dailyRewardLimitMinor.toString(),
     dailyRewardLimit: serializeMoney(p.dailyRewardLimitMinor),
+    referralBonusPercent: p.referralBonusPercent,
+    colorGradient: p.colorGradient,
+    isPopular: p.isPopular,
+    features: p.features,
+    status: p.status,
   }));
 
   return c.json(apiSuccess(formatted));
 });
 
+// GET /api/v1/packages/:id - Get package by ID
 packagesRouter.get("/:id", async (c) => {
   const id = c.req.param("id");
-  const pkg = defaultPackages.find((p) => p.id === id) || defaultPackages[0];
+  if (!id) {
+    throw new BadRequestError("প্যাকেজ আইডি আবশ্যক");
+  }
+
+  const [pkg] = await db
+    .select()
+    .from(packages)
+    .where(eq(packages.id, id))
+    .limit(1);
+
+  if (!pkg) {
+    throw new NotFoundError("প্যাকেজটি খুঁজে পাওয়া যায়নি");
+  }
 
   return c.json(
     apiSuccess({
-      ...pkg,
+      id: pkg.id,
+      name: pkg.name,
+      priceMinor: pkg.priceMinor.toString(),
       price: serializeMoney(pkg.priceMinor),
+      validityDays: pkg.validityDays,
+      dailyTaskLimit: pkg.dailyTaskLimit,
+      dailyRewardLimitMinor: pkg.dailyRewardLimitMinor.toString(),
       dailyRewardLimit: serializeMoney(pkg.dailyRewardLimitMinor),
+      referralBonusPercent: pkg.referralBonusPercent,
+      colorGradient: pkg.colorGradient,
+      isPopular: pkg.isPopular,
+      features: pkg.features,
+      status: pkg.status,
     })
   );
 });
 
 const purchaseSchema = z.object({
-  packageId: z.string().min(1),
-  paymentMethod: z.enum(["bKash", "Nagad", "Rocket"]),
-  senderNumber: z.string().min(11),
-  transactionId: z.string().min(4),
+  packageId: z.string().uuid("সঠিক প্যাকেজ নির্বাচন করুন"),
+  paymentMethod: z.string().min(2, "পেমেন্ট মাধ্যম নির্বাচন করুন"),
+  senderNumber: z.string().min(11, "১১ ডিজিটের সেন্ডার নম্বর দিন"),
+  transactionId: z.string().min(4, "ট্রানজেকশন আইডি দিন"),
 });
 
+// POST /api/v1/packages/purchase - Submit package purchase request
 packagesRouter.post("/purchase", requireAuth, async (c) => {
-  const user = c.get("user")!;
-  const body = await c.req.json();
-  const data = purchaseSchema.parse(body);
+  const authUser = c.get("user")!;
+  const body = await c.req.json().catch(() => ({}));
+  const validation = purchaseSchema.safeParse(body);
 
-  const pkg = defaultPackages.find((p) => p.id === data.packageId);
+  if (!validation.success) {
+    const issue = validation.error.issues[0];
+    throw new BadRequestError(issue ? issue.message : "ভুল তথ্য প্রদান করা হয়েছে");
+  }
+
+  const { packageId, paymentMethod, senderNumber, transactionId } = validation.data;
+
+  // 1. Fetch package
+  const [pkg] = await db
+    .select()
+    .from(packages)
+    .where(eq(packages.id, packageId))
+    .limit(1);
+
+  if (!pkg) {
+    throw new NotFoundError("নির্বাচিত প্যাকেজটি পাওয়া যায়নি");
+  }
+
+  // 2. Insert into package_purchases
+  const [purchase] = await db
+    .insert(packagePurchases)
+    .values({
+      userId: authUser.id,
+      packageId: pkg.id,
+      amountMinor: pkg.priceMinor,
+      paymentMethod,
+      senderNumber: senderNumber.trim(),
+      transactionId: transactionId.trim().toUpperCase(),
+      status: "PENDING",
+    })
+    .returning();
 
   return c.json(
-    apiSuccess(
-      {
-        purchaseId: `pur_${Date.now()}`,
-        userId: user.id,
-        packageName: pkg?.name || data.packageId,
-        paymentMethod: data.paymentMethod,
-        transactionId: data.transactionId,
-        status: "PENDING",
-        message: "প্যাকেজ কেনার অনুরোধ গৃহীত হয়েছে, যাচাইয়ের পর সক্রিয় হবে।",
+    apiSuccess({
+      message: `'${pkg.name}' প্যাকেজ কেনার অনুরোধ সফলভাবে গৃহীত হয়েছে! অ্যাডমিন ট্রানজেকশন যাচাই করে দ্রুত আপনার প্যাকেজটি সক্রিয় করবেন।`,
+      purchase: {
+        id: purchase.id,
+        packageName: pkg.name,
+        amount: serializeMoney(purchase.amountMinor),
+        paymentMethod: purchase.paymentMethod,
+        transactionId: purchase.transactionId,
+        status: purchase.status,
+        createdAt: purchase.createdAt,
       },
-      { statusCode: 201 }
-    ),
+    }),
     201
   );
 });

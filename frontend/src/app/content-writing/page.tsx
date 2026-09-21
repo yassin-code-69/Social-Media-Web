@@ -31,6 +31,7 @@ import {
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { useMockStore, TaskItem } from "@/lib/mock-store";
+import { contentApi } from "@/lib/api-client";
 
 export default function ContentWritingPage() {
   const router = useRouter();
@@ -44,9 +45,7 @@ export default function ContentWritingPage() {
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
   const [facebookUrl, setFacebookUrl] = useState("");
-  const [screenshotUrl, setScreenshotUrl] = useState(
-    "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80"
-  );
+  const [screenshotUrl, setScreenshotUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -95,6 +94,15 @@ export default function ContentWritingPage() {
     try {
       const matchedTask = contentTasks.find((t) => t.title === selectedTopic);
       const reward = matchedTask?.reward || 20;
+
+      // Submit to live backend API
+      contentApi
+        .submit({
+          type: "ARTICLE",
+          title: postTitle.trim(),
+          contentBody: postContent.trim(),
+        })
+        .catch(() => {});
 
       submitContentWritingPost({
         taskId: matchedTask?.id || `task_content_${Date.now()}`,

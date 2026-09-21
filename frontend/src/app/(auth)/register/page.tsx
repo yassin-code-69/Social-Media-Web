@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Phone, Mail, Lock, Gift, ArrowRight } from "lucide-react";
+import { User, Phone, Mail, Lock, Gift, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
+import { authApi } from "@/lib/api-client";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -12,17 +13,36 @@ export default function RegisterPage() {
     phone: "",
     email: "",
     password: "",
-    referralCode: "DIGON-7842",
+    referralCode: "",
   });
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    try {
+      await authApi.register({
+        displayName: formData.name.trim(),
+        phone: formData.phone.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        referralCode: formData.referralCode ? formData.referralCode.trim().toUpperCase() : undefined,
+      });
+
+      setSuccessMessage("অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! ড্যাশবোর্ডে প্রবেশ করা হচ্ছে...");
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    } catch (err: any) {
+      setErrorMessage(err.message || "রেজিস্ট্রেশন সম্পন্ন করতে সমস্যা হয়েছে। তথ্য যাচাই করুন।");
+    } finally {
       setLoading(false);
-      router.push("/");
-    }, 600);
+    }
   };
 
   return (
@@ -44,6 +64,21 @@ export default function RegisterPage() {
             মাত্র ১ মিনিটে বিনামূল্যে যোগ দিন এবং ইনকাম শুরু করুন
           </p>
         </div>
+
+        {/* Alerts */}
+        {errorMessage && (
+          <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-xs text-rose-700">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-xs text-emerald-700">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
+            <span>{successMessage}</span>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
@@ -133,10 +168,10 @@ export default function RegisterPage() {
               </div>
               <input
                 type="text"
-                placeholder="DIGON-XXXX"
+                placeholder="রেফারেল কোড থাকলে দিন (যেমন: DIGIXXXX)"
                 value={formData.referralCode}
                 onChange={(e) => setFormData({ ...formData, referralCode: e.target.value })}
-                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1e5eb3] focus:bg-white transition-all text-slate-900 font-sans font-bold"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1e5eb3] focus:bg-white transition-all text-slate-900 font-sans font-bold uppercase"
               />
             </div>
           </div>

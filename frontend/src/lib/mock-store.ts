@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { authApi, tasksApi, packagesApi, adminApi, notificationsApi, settingsApi } from "./api-client";
 
 // Types
 export interface UserProfile {
@@ -31,6 +32,7 @@ export interface AdminSettings {
   announcement: string;
   isWithdrawalEnabled: boolean;
   isDepositEnabled: boolean;
+  monthlyBonus?: number;
 }
 
 export interface PackageItem {
@@ -178,19 +180,19 @@ const initialSpinState: DailySpinState = {
 
 // Initial Mock Seed
 const initialProfile: UserProfile = {
-  id: "user_1024",
-  name: "তামিম ইসলাম",
-  phone: "01789-123456",
-  email: "tamim.islam@example.com",
-  avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&h=150&q=80",
-  packageName: "Gold",
-  packageStatus: "ACTIVE",
-  packageExpiry: "2026-10-15",
-  balance: 1250.0,
-  totalEarned: 320.0,
-  totalWithdrawn: 600.0,
-  completedTasksCount: 12,
-  referralCode: "DIGON-7842",
+  id: "guest",
+  name: "অতিথি মেম্বার",
+  phone: "",
+  email: "",
+  avatar: "",
+  packageName: "ফ্রি মেম্বার",
+  packageStatus: "FREE",
+  packageExpiry: "২০২৭",
+  balance: 0.0,
+  totalEarned: 0.0,
+  totalWithdrawn: 0.0,
+  completedTasksCount: 0,
+  referralCode: "",
   role: "USER",
 };
 
@@ -252,592 +254,14 @@ const initialPackages: PackageItem[] = [
     features: ["দৈনিক ৪৫টি টাস্ক", "প্রিমিয়াম সার্ভে ও ভিডিও", "সর্বোচ্চ রেফারেল বেনিফিট", "৬০ দিন মেয়াদ"],
   },
 ];
-
-const initialTasks: TaskItem[] = [
-  {
-    id: "task_yt_1",
-    title: "YouTube ভিডিও দেখুন",
-    platform: "youtube",
-    reward: 10,
-    action: "২ মিনিট দেখুন ও সাবস্ক্রাইব করুন",
-    description: "প্রদত্ত লিংকে গিয়ে পুরো ভিডিওটি মনোযোগ সহকারে অন্তত ২ মিনিট দেখুন। এরপর ভিডিওতে লাইক দিয়ে চ্যানেল সাবস্ক্রাইব করুন।",
-    instructions: [
-      "১. 'টাস্ক লিংকে যান' বাটনে ক্লিক করে ইউটিউব ভিডিও ওপেন করুন।",
-      "২. ভিডিওটি ন্যূনতম ২ মিনিট রানিং থাকতে হবে।",
-      "৩. লাইক ও চ্যানেল সাবস্ক্রাইব করুন।",
-      "৪. সাবস্ক্রাইব করা অবস্থার স্পষ্ট স্ক্রিনশট তুলুন এবং সাবমিট বক্সে আপলোড করুন।",
-    ],
-    targetUrl: "https://youtube.com",
-    requiredPackage: "ফ্রি / যেকোনো",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_fb_1",
-    title: "Facebook পেজ লাইক ও ফলো",
-    platform: "facebook",
-    reward: 8,
-    action: "লাইক ও ফলো করে স্ক্রিনশট দিন",
-    description: "প্রদত্ত ফেসবুক পেজে যান এবং 'Like' ও 'Follow' বাটনে প্রেস করুন। ফলো সম্পন্ন করার পর একটি স্ক্রিনশট সংগ্রহ করুন।",
-    instructions: [
-      "১. লিংকে গিয়ে পেজ ভিজিট করুন।",
-      "২. Like ও Follow করুন।",
-      "৩. Following বাটন দেখা যাচ্ছে এমন অবস্থায় স্ক্রিনশট তুলুন।",
-      "৪. স্ক্রিনশট আপলোড করে টাস্ক জমা দিন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "ফ্রি / যেকোনো",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_tt_1",
-    title: "TikTok ভিডিও দেখুন ও লাইক দিন",
-    platform: "tiktok",
-    reward: 12,
-    action: "১টি ভিডিও দেখুন ও লাভ রিঅ্যাক্ট দিন",
-    description: "টিকটক ভিডিওটি সম্পূর্ণ দেখে লাইক দিন এবং আইডিতে ফলো দিয়ে স্ক্রিনশট আপলোড করুন।",
-    instructions: [
-      "১. ভিডিও ওপেন করুন এবং সম্পূর্ণ দেখুন।",
-      "২. লাইক বাটনে চাপ দিয়ে লাল হার্ট বানান।",
-      "৩. প্রোফাইলে ফলো দিন।",
-      "৪. প্রুফ স্ক্রিনশট যুক্ত করে সাবমিট করুন।",
-    ],
-    targetUrl: "https://tiktok.com",
-    requiredPackage: "ফ্রি / যেকোনো",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_web_1",
-    title: "ওয়েবসাইট ১ মিনিট ভিজিট করুন",
-    platform: "website",
-    reward: 5,
-    action: "আর্টিকেল স্ক্রল করে ১ মিনিট থাকুন",
-    description: "ওয়েবসাইটে ভিজিট করে অন্তত ৬০ সেকেন্ড অবস্থান করুন। স্ক্রল করে আর্টিকেলটি শেষ পর্যন্ত পড়ুন।",
-    instructions: [
-      "১. ওয়েবসাইট লিংকে ক্লিক করুন।",
-      "২. পেজের নিচে পর্যন্ত ধীরে ধীরে স্ক্রল করুন।",
-      "৩. পেজে ন্যূনতম ৬০ সেকেন্ড অপেক্ষা করুন।",
-      "৪. স্ক্রিনের টাইমসহ একটি স্ক্রিনশট জমা দিন।",
-    ],
-    targetUrl: "https://google.com",
-    requiredPackage: "ফ্রি / যেকোনো",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_vid_1",
-    title: "দিগন্ত সম্পর্কিত রিভিউ ভিডিও",
-    platform: "video",
-    reward: 50,
-    action: "ফেসবুক/ইউটিউবে ১ মিনিটের রিভিউ শেয়ার",
-    description: "দিগন্ত প্ল্যাটফর্ম থেকে আপনি কীভাবে ইনকাম করছেন সে সম্পর্কে ১ মিনিটের একটি ইতিবাচক ভিডিও তৈরি করে সোশ্যাল মিডিয়ায় পোস্ট করুন।",
-    instructions: [
-      "১. আপনার নিজস্ব ভাষায় ১ মিনিটের ভিডিও বানান।",
-      "২. আপনার রেফারেল লিংক ক্যাপশনে দিন।",
-      "৩. পোস্টের লিংক এবং ভিউয়ের স্ক্রিনশট সাবমিট করুন।",
-    ],
-    targetUrl: "#",
-    requiredPackage: "Gold / Platinum",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_cap_1",
-    title: "সহজ ক্যাপচা এন্ট্রি",
-    platform: "captcha",
-    reward: 6,
-    action: "সঠিক কোড টাইপ করে জমা দিন",
-    description: "প্রদত্ত ক্যাপচা ইমেজ বা কোডটি দেখে নির্ভুলভাবে বক্সে টাইপ করুন।",
-    instructions: [
-      "১. ক্যাপচা ইমেজ দেখুন।",
-      "২. টেক্সট বক্সে সঠিক অক্ষর ও সংখ্যা লিখুন।",
-      "৩. সাবমিট করুন।",
-    ],
-    targetUrl: "#",
-    requiredPackage: "ফ্রি / যেকোনো",
-    requiresScreenshot: false,
-  },
-  {
-    id: "task_fb_follower",
-    title: "Facebook Page Follower By Search",
-    platform: "facebook",
-    category: "Facebook Work",
-    reward: 0.25,
-    availableWorks: 12,
-    action: "সার্চ করে পেজ ফলো দিন",
-    description: "সার্চ অপশনে গিয়ে পেজের নাম লিখুন, পেজটি ওপেন করে ফলো দিয়ে স্ক্রিনশট দিন।",
-    instructions: [
-      "১. ফেসবুকে নির্দিষ্ট পেজের নাম সার্চ করুন।",
-      "২. সঠিক পেজটিতে ঢুকে Follow বাটনে ক্লিক করুন।",
-      "৩. Following বাটন দেখা যাচ্ছে এমন অবস্থায় স্ক্রিনশট নিন।",
-      "৪. স্ক্রিনশট প্রুফ বক্সে আপলোড করে জমা দিন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_fb_love_react",
-    title: "FB Post Love React and Comment",
-    platform: "facebook",
-    category: "Facebook Work",
-    reward: 0.30,
-    availableWorks: 7,
-    action: "পোস্টে লাভ রিঅ্যাক্ট ও পজিটিভ কমেন্ট করুন",
-    description: "পোস্টে গিয়ে লাভ রিঅ্যাক্ট দিন এবং কাজ সম্পর্কিত সুন্দর ১ লাইনের কমেন্ট করুন।",
-    instructions: [
-      "১. পোস্টের লিংকে যান।",
-      "২. পোস্টে Love React দিন।",
-      "৩. সুন্দর মন্তব্য লিখুন (যেমন: 'অসাধারণ উদ্যোগ!')।",
-      "৪. কমেন্টসহ পোস্টের স্ক্রিনশট আপলোড করুন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_fb_id_follower",
-    title: "Facebook Id Follower By Search",
-    platform: "facebook",
-    category: "Facebook Work",
-    reward: 0.25,
-    availableWorks: 6,
-    action: "আইডি সার্চ করে ফলো দিন",
-    description: "সার্চ করে নির্দিষ্ট ফেসবুক প্রোফাইল খুঁজে বের করুন এবং ফলো দিন।",
-    instructions: [
-      "১. ফেসবুক সার্চে প্রোফাইল নাম সার্চ করুন।",
-      "২. প্রোফাইলে ঢুকে Follow করুন।",
-      "৩. ফলো সম্পন্ন হওয়ার স্ক্রিনশট নিন এবং সাবমিট করুন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_fb_group_post",
-    title: "Facebook Group Post",
-    platform: "facebook",
-    category: "Facebook Work",
-    reward: 0.25,
-    availableWorks: 6,
-    action: "গ্রুপে পোস্ট শেয়ার করুন",
-    description: "প্রদত্ত পোস্টটি যেকোনো সক্রিয় গ্রুপে শেয়ার করুন বা পোস্ট করুন।",
-    instructions: [
-      "১. গ্রুপে টেক্সট ও ইমেজ পোস্ট করুন।",
-      "২. পোস্ট পাবলিশ হলে লিংক বা স্ক্রিনশট নিন।",
-      "৩. প্রুফ জমা দিন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_fb_share",
-    title: "Facebook Post Like , Comment & Share",
-    platform: "facebook",
-    category: "Facebook Work",
-    reward: 0.40,
-    availableWorks: 6,
-    action: "লাইক, কমেন্ট ও নিজের টাইমলাইনে শেয়ার",
-    description: "পোস্টে লাইক দিয়ে কমেন্ট করুন এবং পাবলিকলি নিজের টাইমলাইনে শেয়ার করুন।",
-    instructions: [
-      "১. পোস্টে লাইক ও কমেন্ট দিন।",
-      "২. Share to Feed (Public) করুন।",
-      "৩. টাইমলাইনের শেয়ার করা পোস্টের স্ক্রিনশট জমা দিন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_fb_reels",
-    title: "Facebook Reels video 1 min watch, like , comment...",
-    platform: "facebook",
-    category: "Facebook Work",
-    reward: 0.50,
-    availableWorks: 3,
-    action: "রিলস ভিডিও ১ মিনিট দেখে লাইক ও কমেন্ট করুন",
-    description: "সম্পূর্ণ ১ মিনিট রিলসটি দেখুন, লাইক দিন এবং রিলেটেড কমেন্ট করুন।",
-    instructions: [
-      "১. রিলস ভিডিও লিংকে যান।",
-      "২. ১ মিনিট মনোযোগ দিয়ে দেখুন।",
-      "৩. লাইক ও কমেন্ট করুন।",
-      "৪. স্ক্রিনশট জমা দিন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_fb_review",
-    title: "Facebook Page Review",
-    platform: "facebook",
-    category: "Facebook Work",
-    reward: 1.50,
-    availableWorks: 2,
-    action: "ফেসবুক পেজে ৫ স্টার রেটিং ও পজিটিভ রিভিউ দিন",
-    description: "পেজের Reviews ট্যাবে যান, 'Do you recommend this Page?' এ 'Yes' চাপুন এবং সুন্দর রিভিউ লিখুন।",
-    instructions: [
-      "১. পেজের Reviews অপশনে যান।",
-      "২. Yes অপশনে ক্লিক করুন।",
-      "৩. ৫০ শব্দের ইতিবাচক রিভিউ লিখে পোস্ট করুন।",
-      "৪. রিভিউ পোস্টের স্পষ্ট স্ক্রিনশট আপলোড করুন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_insta_follow",
-    title: "Instagram Account Follow & 3 Posts Like",
-    platform: "instagram",
-    category: "Instagram Work",
-    reward: 0.35,
-    availableWorks: 2,
-    action: "ইনস্টাগ্রাম প্রোফাইল ফলো ও পোস্টে লাইক দিন",
-    description: "প্রোফাইল ফলো দিয়ে সাম্প্রতিক ৩টি ফটোতে লাভ রিঅ্যাক্ট দিন।",
-    instructions: [
-      "১. ইনস্টাগ্রাম লিংকে যান।",
-      "২. Follow বাটনে ক্লিক করুন।",
-      "৩. প্রথম ৩টি পোস্টে হার্ট রিঅ্যাক্ট দিন।",
-      "৪. স্ক্রিনশট তুলে জমা দিন।",
-    ],
-    targetUrl: "https://instagram.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_yt_watch",
-    title: "YouTube Video Watch 3 Min & Subscribe",
-    platform: "youtube",
-    category: "YouTube Work",
-    reward: 1.20,
-    availableWorks: 11,
-    action: "ভিডিও ৩ মিনিট দেখে সাবস্ক্রাইব করুন",
-    description: "ইউটিউব ভিডিওটি ৩ মিনিট দেখুন, লাইক দিন এবং চ্যানেল সাবস্ক্রাইব করে বেল আইকন বাজান।",
-    instructions: [
-      "১. ইউটিউব ভিডিও ওপেন করুন।",
-      "২. ন্যূনতম ৩ মিনিট শুনুন ও দেখুন।",
-      "৩. লাইক ও সাবস্ক্রাইব করুন।",
-      "৪. স্ক্রিনশট তুলে প্রুফ সাবমিট করুন।",
-    ],
-    targetUrl: "https://youtube.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_app_install",
-    title: "Apps Install & Open 2 Min",
-    platform: "apps",
-    category: "Apps Work",
-    reward: 2.50,
-    availableWorks: 1,
-    action: "প্লেস্টোর থেকে অ্যাপ ইনস্টল করে ২ মিনিট ব্যবহার করুন",
-    description: "অ্যাপটি ডাউনলোড ও ইনস্টল করে ২ মিনিট ওপেন রাখুন এবং হোম স্ক্রিনের স্ক্রিনশট নিন।",
-    instructions: [
-      "১. প্লেস্টোর লিংকে গিয়ে অ্যাপ ইনস্টল করুন।",
-      "২. অ্যাপ ওপেন করে ২ মিনিট ব্রাউজ করুন।",
-      "৩. ফোনে অ্যাপ ইনস্টল থাকা অবস্থার স্ক্রিনশট দিন।",
-    ],
-    targetUrl: "https://play.google.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_buysell_gmail",
-    title: "Gmail & facebook Buy - Sell",
-    platform: "buysell",
-    category: "Gmail & facebook Buy - Sell",
-    reward: 15.00,
-    availableWorks: 2,
-    action: "ভেরিফায়েড জিমেইল / ফেসবুক অ্যাকাউন্ট ট্রেড",
-    description: "পুরাতন ও সচল অ্যাকাউন্ট যাচাই ও ক্রয়-বিক্রয় সেবা। নির্দেশনা অনুযায়ী তথ্য সাবমিট করুন।",
-    instructions: [
-      "১. অ্যাকাউন্ট বয়স ন্যূনতম ৬ মাস হতে হবে।",
-      "২. টু-ফ্যাক্টর অথেনটিকেশন সক্রিয় থাকতে হবে।",
-      "৩. ফর্ম পূরণ করে আইডি জমা দিন।",
-    ],
-    targetUrl: "#",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_tt_like",
-    title: "TikTok Video Like & Share",
-    platform: "tiktok",
-    category: "TikTok Work",
-    reward: 0.30,
-    availableWorks: 8,
-    action: "ভিডিও লাইক ও কপি লিংক শেয়ার",
-    description: "টিকটক ভিডিওতে লাইক দিয়ে শেয়ার অপশন থেকে লিংক কপি করুন।",
-    instructions: [
-      "১. ভিডিও সম্পূর্ণ দেখুন।",
-      "২. লাইক বাটনে চাপ দিন।",
-      "৩. স্ক্রিনশট দিন।",
-    ],
-    targetUrl: "https://tiktok.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_tg_join",
-    title: "Telegram Channel Join",
-    platform: "telegram",
-    category: "Telegram Work",
-    reward: 0.25,
-    availableWorks: 5,
-    action: "টেলিগ্রাম চ্যানেলে জয়েন করুন",
-    description: "চ্যানেলে জয়েন করে মিউট না রেখে নোটিফিকেশন অন রাখুন এবং স্ক্রিনশট দিন।",
-    instructions: [
-      "১. টেলিগ্রাম লিংকে ক্লিক করুন।",
-      "২. Join Channel বাটনে চাপুন।",
-      "৩. জয়েনড অবস্থার স্ক্রিনশট তুলে সাবমিট করুন।",
-    ],
-    targetUrl: "https://telegram.org",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_content_fb_income",
-    title: "দিগন্ত থেকে অনলাইন ইনকাম করার বাস্তব অভিজ্ঞতা লিখুন",
-    platform: "content",
-    category: "Facebook Work",
-    reward: 20,
-    availableWorks: 15,
-    action: "ফেসবুক পোস্ট লিখে লিংক ও স্ক্রিনশট দিন",
-    description: "দিগন্ত ওয়েবসাইটে আপনার কাজ করার অভিজ্ঞতা, পেমেন্ট পাওয়ার প্রমাণ বা টাস্ক করার নিয়ম নিয়ে ফেসবুকে অন্তত ১০০ শব্দের একটি তথ্যবহুল পোস্ট লিখুন এবং সাবমিট করুন।",
-    instructions: [
-      "১. ফেসবুক প্রোফাইল বা যেকোনো সক্রিয় আর্নিং/জব গ্রুপে পোস্ট লিখুন।",
-      "২. লেখায় দিগন্ত প্ল্যাটফর্মের কাজের নিয়ম ও সুবিধার কথা উল্লেখ করুন।",
-      "৩. পোস্টের দৈর্ঘ্য ন্যূনতম ১০০ শব্দ হতে হবে।",
-      "৪. পোস্টের লিংক এবং স্ক্রিনশট সাবমিট বক্সে জমা দিন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_content_fb_refer",
-    title: "দিগন্তে রেফার করে বেশি ইনকাম করার কৌশল নিয়ে পোস্ট",
-    platform: "content",
-    category: "Facebook Work",
-    reward: 25,
-    availableWorks: 10,
-    action: "রেফারেল গাইড ও টিপস নিয়ে পোস্ট করুন",
-    description: "কীভাবে দিগন্তে রেফার করে আনলিমিটেড ইনকাম করা যায়, সে সম্পর্কে টিপস দিয়ে একটি আকর্ষণীয় ফেসবুক পোস্ট তৈরি করুন।",
-    instructions: [
-      "১. নিজের রেফার কোডসহ ফেসবুকে পোস্ট তৈরি করুন।",
-      "২. বন্ধুদের দিগন্তে জয়েন করার নিয়ম বুঝিয়ে লিখুন।",
-      "৩. পোস্টের লিংক ও প্রুফ স্ক্রিনশট সাবমিট করুন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-  {
-    id: "task_content_fb_spin",
-    title: "দিগন্তের ডেইলি লাকি স্পিন ও বোনাস নিয়ে রিভিউ লিখুন",
-    platform: "content",
-    category: "Facebook Work",
-    reward: 15,
-    availableWorks: 20,
-    action: "স্পিন ও মিশন বোনাস সম্পর্কে পোস্ট লিখুন",
-    description: "দিগন্তের দৈনিক লাকি স্পিন ও ৭ দিনের মিশন বোনাস কীভাবে কাজ করে তা নিয়ে ফেসবুকে বিস্তারিত পোস্ট শেয়ার করুন।",
-    instructions: [
-      "১. স্পিন বা বোনাস পাওয়ার স্ক্রিনশট যুক্ত করে পোস্ট লিখুন।",
-      "২. পোস্ট পাবলিশ করে লিংক ও প্রুফ জমা দিন।",
-    ],
-    targetUrl: "https://facebook.com",
-    requiredPackage: "সকল প্যাকেজ",
-    requiresScreenshot: true,
-  },
-];
-
-const initialSubmissions: TaskSubmission[] = [
-  {
-    id: "sub_101",
-    taskId: "task_yt_1",
-    taskTitle: "YouTube ভিডিও দেখুন",
-    userId: "user_1024",
-    userName: "তামিম ইসলাম",
-    platform: "youtube",
-    reward: 10,
-    screenshotUrl: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=400&q=80",
-    userNote: "সম্পূর্ণ ২ মিনিট দেখে লাইক ও সাবস্ক্রাইব করেছি।",
-    status: "APPROVED",
-    submittedAt: "16 Sep 2026, 04:30 PM",
-  },
-  {
-    id: "sub_102",
-    taskId: "task_fb_1",
-    taskTitle: "Facebook পেজ লাইক ও ফলো",
-    userId: "user_1024",
-    userName: "তামিম ইসলাম",
-    platform: "facebook",
-    reward: 8,
-    screenshotUrl: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=400&q=80",
-    userNote: "পেজ ফলো করেছি।",
-    status: "PENDING",
-    submittedAt: "17 Sep 2026, 11:15 AM",
-  },
-  {
-    id: "sub_cnt_101",
-    taskId: "task_content_fb_income",
-    taskTitle: "দিগন্ত থেকে অনলাইন ইনকাম করার বাস্তব অভিজ্ঞতা লিখুন",
-    userId: "user_1024",
-    userName: "তামিম ইসলাম",
-    platform: "content",
-    reward: 20,
-    screenshotUrl: "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80",
-    userNote: "[লিংক: https://facebook.com/groups/earningbd/posts/10293847]\n\nদিগন্ত ওয়েবসাইটের মাধ্যমে ঘরে বসেই মোবাইল দিয়ে মাইক্রোজব ও ফেসবুক পোস্ট লিখে চমৎকার ইনকাম করা যায়। এডমিনরা অত্যন্ত দ্রুত পেমেন্ট অনুমোদন করেন।",
-    status: "APPROVED",
-    submittedAt: "18 Sep 2026, 03:40 PM",
-  },
-];
-
-const initialDeposits: DepositItem[] = [
-  {
-    id: "dep_901",
-    userId: "user_1024",
-    userName: "তামিম ইসলাম",
-    amount: 1000,
-    paymentMethod: "bKash",
-    senderNumber: "01712-345678",
-    transactionId: "TRX89712634B",
-    screenshotUrl: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=400&q=80",
-    status: "APPROVED",
-    adminNote: "পেমেন্ট সফলভাবে ভেরিফাই হয়েছে।",
-    createdAt: "15 Sep 2026, 02:10 PM",
-  },
-];
-
-const initialWithdrawals: WithdrawalItem[] = [
-  {
-    id: "wth_801",
-    userId: "user_1024",
-    userName: "তামিম ইসলাম",
-    amount: 500,
-    paymentMethod: "Nagad",
-    accountNumber: "01789123456",
-    maskedAccount: "01789*****56",
-    status: "APPROVED",
-    adminNote: "উইথড্র সম্পন্ন হয়েছে।",
-    createdAt: "14 Sep 2026, 06:45 PM",
-  },
-];
-
-const initialTransactions: TransactionItem[] = [
-  {
-    id: "tx_1",
-    type: "DEPOSIT",
-    direction: "CREDIT",
-    amount: 1000,
-    description: "bKash ডিপোজিট অনুমোদন",
-    balanceAfter: 1000,
-    createdAt: "15 Sep 2026, 02:10 PM",
-  },
-  {
-    id: "tx_2",
-    type: "WITHDRAWAL",
-    direction: "DEBIT",
-    amount: 500,
-    description: "Nagad উইথড্রয়াল প্রসেসড",
-    balanceAfter: 500,
-    createdAt: "14 Sep 2026, 06:45 PM",
-  },
-  {
-    id: "tx_3",
-    type: "TASK_REWARD",
-    direction: "CREDIT",
-    amount: 10,
-    description: "YouTube টাস্ক সম্পন্ন করার রিওয়ার্ড",
-    balanceAfter: 510,
-    createdAt: "16 Sep 2026, 04:30 PM",
-  },
-  {
-    id: "tx_4",
-    type: "REFERRAL_REWARD",
-    direction: "CREDIT",
-    amount: 20,
-    description: "বন্ধুর প্যাকেজ পারচেজ বোনাস",
-    balanceAfter: 530,
-    createdAt: "16 Sep 2026, 08:20 PM",
-  },
-  {
-    id: "tx_5",
-    type: "DEPOSIT",
-    direction: "CREDIT",
-    amount: 720,
-    description: "ম্যানুয়াল রিচার্জ ক্রেডিট",
-    balanceAfter: 1250,
-    createdAt: "17 Sep 2026, 09:00 AM",
-  },
-];
-
-const initialReferrals: ReferralItem[] = [
-  { id: "ref_1", name: "রাকিবুল হাসান", userId: "user_501", joinDate: "12 Sep 2026", status: "ACTIVE", reward: 20, hasPaidPackage: true },
-  { id: "ref_2", name: "মেহেদী হাসান", userId: "user_502", joinDate: "14 Sep 2026", status: "ACTIVE", reward: 20, hasPaidPackage: true },
-  { id: "ref_3", name: "আরিফ চৌধুরী", userId: "user_503", joinDate: "15 Sep 2026", status: "INACTIVE", reward: 0, hasPaidPackage: false },
-  { id: "ref_4", name: "তানভীর আহমেদ", userId: "user_504", joinDate: "16 Sep 2026", status: "ACTIVE", reward: 20, hasPaidPackage: true },
-];
-
-const initialNotifications: NotificationItem[] = [
-  { id: "notif_1", title: "টাস্ক অনুমোদিত!", message: "আপনার YouTube ভিডিও টাস্কটি অনুমোদিত হয়েছে এবং ৳ ১০ ব্যালেন্সে যুক্ত হয়েছে।", type: "TASK", read: false, createdAt: "১০ মিনিট আগে" },
-  { id: "notif_2", title: "রেফারেল রিওয়ার্ড!", message: "আপনার আমন্ত্রণে রাকিবুল হাসান Gold প্যাকেজ কেনায় আপনি ৳ ২০ বোনাস পেয়েছেন।", type: "REFERRAL", read: false, createdAt: "২ ঘণ্টা আগে" },
-  { id: "notif_3", title: "ডিপোজিট সফল!", message: "আপনার ৳ ১,০০০ ডিপোজিট অনুরোধ অ্যাডমিন কর্তৃক অনুমোদিত হয়েছে।", type: "FINANCE", read: true, createdAt: "গতকাল" },
-];
-
-const initialUsers: UserProfile[] = [
-  initialProfile,
-  {
-    id: "user_1025",
-    name: "সাকিব আল হাসান",
-    phone: "01812-456789",
-    email: "sakib.h@example.com",
-    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80",
-    packageName: "Silver",
-    packageStatus: "ACTIVE",
-    packageExpiry: "2026-10-01",
-    balance: 840.0,
-    totalEarned: 1420.0,
-    totalWithdrawn: 500.0,
-    completedTasksCount: 28,
-    referralCode: "DIGON-5521",
-    role: "USER",
-    status: "ACTIVE",
-  },
-  {
-    id: "user_1026",
-    name: "নুসরাত জাহান",
-    phone: "01923-887766",
-    email: "nusrat.jahan@example.com",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
-    packageName: "Platinum",
-    packageStatus: "ACTIVE",
-    packageExpiry: "2026-11-20",
-    balance: 3450.0,
-    totalEarned: 5200.0,
-    totalWithdrawn: 2000.0,
-    completedTasksCount: 65,
-    referralCode: "DIGON-9901",
-    role: "USER",
-    status: "ACTIVE",
-  },
-  {
-    id: "user_1027",
-    name: "মেহেদী হাসান",
-    phone: "01633-112233",
-    email: "mehedi.h@example.com",
-    avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&h=150&q=80",
-    packageName: "Bronze",
-    packageStatus: "ACTIVE",
-    packageExpiry: "2026-09-30",
-    balance: 150.0,
-    totalEarned: 220.0,
-    totalWithdrawn: 0.0,
-    completedTasksCount: 6,
-    referralCode: "DIGON-3344",
-    role: "USER",
-    status: "SUSPENDED",
-  },
-];
+const initialTasks: TaskItem[] = [];
+const initialSubmissions: TaskSubmission[] = [];
+const initialDeposits: DepositItem[] = [];
+const initialWithdrawals: WithdrawalItem[] = [];
+const initialTransactions: TransactionItem[] = [];
+const initialReferrals: ReferralItem[] = [];
+const initialNotifications: NotificationItem[] = [];
+const initialUsers: UserProfile[] = [];
 
 const initialSettings: AdminSettings = {
   minWithdrawal: 200,
@@ -849,6 +273,7 @@ const initialSettings: AdminSettings = {
   announcement: "দিগন্তে নতুন ফিচার আপডেট এসেছে! প্রতিদিন নতুন নতুন টাস্ক সম্পন্ন করে বেশি আয় করুন।",
   isWithdrawalEnabled: true,
   isDepositEnabled: true,
+  monthlyBonus: 500,
 };
 
 // In-Memory Global Store Manager with LocalStorage Persistence
@@ -868,11 +293,178 @@ export function useMockStore() {
   const [dailySpin, setDailySpin] = useState<DailySpinState>(initialSpinState);
   const [userSkillLevel, setUserSkillLevel] = useState<number>(1);
 
-  // Initialize from LocalStorage
+  // Initialize from LocalStorage and sync with backend
   useEffect(() => {
     try {
       const savedProfile = localStorage.getItem("digonto_profile");
-      if (savedProfile) setProfile(JSON.parse(savedProfile));
+      const savedUser = localStorage.getItem("user_profile");
+      if (savedProfile) {
+        const parsed = JSON.parse(savedProfile);
+        // If it contains legacy mock data, purge it completely
+        if (
+          parsed.id === "usr_mock_123" ||
+          parsed.name === "হাসিবুর রহমান" ||
+          parsed.packageName === "Gold" ||
+          parsed.balance === 350 ||
+          parsed.completedTasksCount === 12 ||
+          (parsed.avatar && parsed.avatar.includes("1534528741775-53994a69daeb"))
+        ) {
+          localStorage.removeItem("digonto_profile");
+          setProfile(initialProfile);
+        } else {
+          setProfile(parsed);
+        }
+      } else if (savedUser) {
+        const u = JSON.parse(savedUser);
+        setProfile((prev) => ({
+          ...prev,
+          id: u.referralCode || u.id || "user_new",
+          name: u.displayName || u.name || "নতুন সদস্য",
+          phone: u.phone || "",
+          email: u.email || "",
+          avatar: u.avatarUrl || "",
+          packageName: "ফ্রি মেম্বার",
+          role: u.role || "USER",
+          referralCode: u.referralCode || "",
+        }));
+      }
+
+      // Fetch live user info from backend if token exists
+      const token = localStorage.getItem("access_token");
+      if (token) {
+        authApi.me().then((res) => {
+          if (res?.user) {
+            const liveProfile: UserProfile = {
+              id: res.user.referralCode || res.user.id,
+              name: res.user.displayName,
+              phone: res.user.phone,
+              email: res.user.email,
+              avatar: res.user.avatarUrl || "",
+              packageName: res.activePackage?.name || "ফ্রি মেম্বার",
+              packageStatus: res.activePackage ? "ACTIVE" : "FREE",
+              packageExpiry: res.activePackage?.expiresAt ? new Date(res.activePackage.expiresAt).toLocaleDateString("bn-BD") : "২০২৭",
+              balance: Number(res.wallet?.balance?.amount || 0),
+              totalEarned: Number(res.wallet?.totalEarned?.amount || 0),
+              totalWithdrawn: Number(res.wallet?.totalWithdrawn?.amount || 0),
+              completedTasksCount: 0,
+              referralCode: res.user.referralCode,
+              role: res.user.role || "USER",
+            };
+            setProfile(liveProfile);
+            localStorage.setItem("digonto_profile", JSON.stringify(liveProfile));
+          }
+        }).catch(() => {});
+      }
+
+      // Purge legacy mock data from browser localStorage if present
+      const legacyMockKeys = [
+        "digonto_submissions",
+        "digonto_deposits",
+        "digonto_withdrawals",
+        "digonto_transactions",
+        "digonto_referrals",
+        "digonto_users",
+        "digonto_tasks",
+      ];
+      for (const k of legacyMockKeys) {
+        const item = localStorage.getItem(k);
+        if (
+          item &&
+          (item.includes("task_yt_1") ||
+            item.includes("sub_101") ||
+            item.includes("dep_901") ||
+            item.includes("wth_801") ||
+            item.includes("tx_1") ||
+            item.includes("user_1025") ||
+            item.includes("ref_1"))
+        ) {
+          localStorage.removeItem(k);
+        }
+      }
+
+      // Restore notifications from storage
+      const savedNotifs = localStorage.getItem("digonto_notifications");
+      if (savedNotifs) {
+        try {
+          const parsed = JSON.parse(savedNotifs);
+          if (Array.isArray(parsed)) {
+            setNotifications(parsed);
+          }
+        } catch {}
+      }
+
+      // Fetch live notifications from backend
+      notificationsApi
+        .getAll()
+        .then((res: any) => {
+          const list = res?.data?.notifications || res?.notifications;
+          if (Array.isArray(list)) {
+            setNotifications(list);
+            localStorage.setItem("digonto_notifications", JSON.stringify(list));
+          }
+        })
+        .catch(() => {});
+
+      // Fetch live tasks from database
+      tasksApi
+        .getAll()
+        .then((data: any) => {
+          const realList = Array.isArray(data) ? data : data?.tasks || [];
+          if (realList.length > 0) {
+            const mapped: TaskItem[] = realList.map((t: any) => ({
+              id: t.id,
+              title: t.title,
+              platform: (t.platform || "website").toLowerCase() as any,
+              reward: Number(t.reward?.amount || (t.rewardMinor ? Number(t.rewardMinor) / 100 : 10)),
+              action: t.action || "টাস্ক সম্পন্ন করুন",
+              description: t.description || "",
+              instructions: Array.isArray(t.instructions) ? t.instructions : ["টাস্কের নিয়ম অনুসরণ করে প্রুফ দিন।"],
+              targetUrl: t.targetUrl || "#",
+              requiredPackage: t.requiredPackage || "সকলের জন্য",
+              requiresScreenshot: t.requiresScreenshot !== false,
+            }));
+            setTasks(mapped);
+          }
+        })
+        .catch(() => {});
+
+      // Fetch live packages from database
+      packagesApi
+        .getAll()
+        .then((data: any) => {
+          const realList = Array.isArray(data) ? data : data?.packages || [];
+          if (realList.length > 0) {
+            const mapped: PackageItem[] = realList.map((p: any) => ({
+              id: p.id,
+              name: p.name,
+              price: Number(p.price?.amount || (p.priceMinor ? Number(p.priceMinor) / 100 : 0)),
+              validityDays: p.validityDays || 30,
+              dailyTaskLimit: p.dailyTaskLimit || 10,
+              dailyRewardLimit: p.dailyRewardLimit || 100,
+              referralBonus: p.referralBonus || 10,
+              color: "from-blue-600 to-indigo-800",
+              features: Array.isArray(p.features) ? p.features : ["দৈনিক টাস্ক", "দ্রুত সাপোর্ট", "রেফারেল কমিশন"],
+            }));
+            setPackages(mapped);
+          }
+        })
+        .catch(() => {});
+
+      // Fetch live platform settings
+      settingsApi
+        .getSettings()
+        .then((res: any) => {
+          const s = res?.data || res;
+          if (s && typeof s === "object") {
+            setSettings((prev) => ({
+              ...prev,
+              ...s,
+            }));
+            localStorage.setItem("digonto_settings", JSON.stringify(s));
+          }
+        })
+        .catch(() => {});
+
       const savedSubmissions = localStorage.getItem("digonto_submissions");
       if (savedSubmissions) setSubmissions(JSON.parse(savedSubmissions));
       const savedDeposits = localStorage.getItem("digonto_deposits");
@@ -885,10 +477,6 @@ export function useMockStore() {
       if (savedUsers) setUsers(JSON.parse(savedUsers));
       const savedSettings = localStorage.getItem("digonto_settings");
       if (savedSettings) setSettings(JSON.parse(savedSettings));
-      const savedPackages = localStorage.getItem("digonto_packages");
-      if (savedPackages) setPackages(JSON.parse(savedPackages));
-      const savedTasks = localStorage.getItem("digonto_tasks");
-      if (savedTasks) setTasks(JSON.parse(savedTasks));
       const savedCheckIn = localStorage.getItem("digonto_daily_checkin");
       if (savedCheckIn) setDailyCheckIn(JSON.parse(savedCheckIn));
       const savedSpin = localStorage.getItem("digonto_daily_spin");
@@ -900,10 +488,33 @@ export function useMockStore() {
     }
   }, []);
 
-  // Save changes helper
+  // Sync state changes across all components on the current page
+  useEffect(() => {
+    const handleSync = (e: any) => {
+      const { key, data } = e.detail || {};
+      if (key === "digonto_notifications") setNotifications(data);
+      if (key === "digonto_profile") setProfile(data);
+      if (key === "digonto_submissions") setSubmissions(data);
+      if (key === "digonto_deposits") setDeposits(data);
+      if (key === "digonto_withdrawals") setWithdrawals(data);
+      if (key === "digonto_transactions") setTransactions(data);
+      if (key === "digonto_settings") setSettings(data);
+      if (key === "digonto_daily_checkin") setDailyCheckIn(data);
+      if (key === "digonto_daily_spin") setDailySpin(data);
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("digonto_store_sync", handleSync);
+      return () => window.removeEventListener("digonto_store_sync", handleSync);
+    }
+  }, []);
+
+  // Save changes helper with cross-component sync event
   const syncStorage = (key: string, data: any) => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("digonto_store_sync", { detail: { key, data } }));
+      }
     } catch {}
   };
 
@@ -920,7 +531,7 @@ export function useMockStore() {
       userName: profile.name,
       platform: task.platform,
       reward: task.reward,
-      screenshotUrl: screenshotUrl || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=400&q=80",
+      screenshotUrl: screenshotUrl || "",
       userNote: note,
       status: "PENDING",
       submittedAt: "এইমাত্র",
@@ -939,7 +550,9 @@ export function useMockStore() {
       read: false,
       createdAt: "এইমাত্র",
     };
-    setNotifications([newNotif, ...notifications]);
+    const updatedNotifs = [newNotif, ...notifications];
+    setNotifications(updatedNotifs);
+    syncStorage("digonto_notifications", updatedNotifs);
   };
 
   // 1b. Submit Content Writing Post
@@ -960,9 +573,7 @@ export function useMockStore() {
       userName: profile.name,
       platform: "content",
       reward: reward,
-      screenshotUrl:
-        params.screenshotUrl ||
-        "https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=600&q=80",
+      screenshotUrl: params.screenshotUrl || "",
       userNote: `[ফেসবুক পোস্ট লিংক: ${params.socialUrl || "লিংক প্রদান করা হয়নি"}]\n\n${params.postContent}`,
       status: "PENDING",
       submittedAt: "এইমাত্র",
@@ -1014,7 +625,9 @@ export function useMockStore() {
       read: false,
       createdAt: "এইমাত্র",
     };
-    setNotifications([newNotif, ...notifications]);
+    const updatedNotifs = [newNotif, ...notifications];
+    setNotifications(updatedNotifs);
+    syncStorage("digonto_notifications", updatedNotifs);
   };
 
   // 3. Submit Withdrawal
@@ -1063,6 +676,19 @@ export function useMockStore() {
     const updatedTx = [newTx, ...transactions];
     setTransactions(updatedTx);
     syncStorage("digonto_transactions", updatedTx);
+
+    // Add withdrawal notification
+    const newNotif: NotificationItem = {
+      id: `notif_${Date.now()}`,
+      title: "উইথড্রয়াল অনুরোধ জমা হয়েছে!",
+      message: `৳ ${amount} উত্তোলনের অনুরোধ প্রক্রিয়াধীন রয়েছে।`,
+      type: "FINANCE",
+      read: false,
+      createdAt: "এইমাত্র",
+    };
+    const updatedNotifs = [newNotif, ...notifications];
+    setNotifications(updatedNotifs);
+    syncStorage("digonto_notifications", updatedNotifs);
   };
 
   // 4. Admin Approves Task Submission
@@ -1484,8 +1110,34 @@ export function useMockStore() {
     syncStorage("digonto_daily_spin", reset);
   };
 
+  const markNotificationAsRead = (id: string) => {
+    const updated = notifications.map((n) => (n.id === id ? { ...n, read: true } : n));
+    setNotifications(updated);
+    syncStorage("digonto_notifications", updated);
+    notificationsApi.markAsRead(id).catch(() => {});
+  };
+
+  const markAllNotificationsAsRead = () => {
+    const updated = notifications.map((n) => ({ ...n, read: true }));
+    setNotifications(updated);
+    syncStorage("digonto_notifications", updated);
+    notificationsApi.markAllAsRead().catch(() => {});
+  };
+
+  const updateProfile = (updates: Partial<UserProfile>) => {
+    setProfile((prev) => {
+      const updated = { ...prev, ...updates };
+      syncStorage("digonto_profile", updated);
+      return updated;
+    });
+  };
+
   return {
     profile,
+    updateProfile,
+    notifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
     packages,
     tasks,
     submissions,
@@ -1493,7 +1145,6 @@ export function useMockStore() {
     withdrawals,
     transactions,
     referrals,
-    notifications,
     users,
     settings,
     userSkillLevel,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -28,16 +28,40 @@ import {
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { useMockStore } from "@/lib/mock-store";
+import { salaryApi } from "@/lib/api-client";
 
 export default function MonthlySalaryPage() {
   const router = useRouter();
-  const { profile, referrals, adjustUserWallet } = useMockStore();
+  const { profile, adjustUserWallet } = useMockStore();
 
-  // Simulated Team Referral Progress
-  const [totalPremiumReferrals, setTotalPremiumReferrals] = useState(115);
-  const [gen1Count, setGen1Count] = useState(105);
-  const [gen2Count, setGen2Count] = useState(52);
-  const [gen3Count, setGen3Count] = useState(24);
+  // Real Team Referral Progress from backend
+  const [totalPremiumReferrals, setTotalPremiumReferrals] = useState(0);
+  const [gen1Count, setGen1Count] = useState(0);
+  const [gen2Count, setGen2Count] = useState(0);
+  const [gen3Count, setGen3Count] = useState(0);
+  const [hasClaimedSalary, setHasClaimedSalary] = useState(false);
+
+  // Incentive delivery form
+  const [recipientName, setRecipientName] = useState("");
+  const [deliveryPhone, setDeliveryPhone] = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+
+  useEffect(() => {
+    salaryApi
+      .getStatus()
+      .then((res) => {
+        if (res?.teamStats) {
+          setGen1Count(res.teamStats.gen1Count || 0);
+          setGen2Count(res.teamStats.gen2Count || 0);
+          setGen3Count(res.teamStats.gen3Count || 0);
+          setTotalPremiumReferrals(res.teamStats.gen1Count || 0);
+        }
+        if (res?.currentMonthClaim) {
+          setHasClaimedSalary(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Claim Modals State
   const [selectedPlan, setSelectedPlan] = useState<{
@@ -105,7 +129,7 @@ export default function MonthlySalaryPage() {
     setClaimErrorMsg(null);
   };
 
-  const handleConfirmClaim = (e: React.FormEvent) => {
+  const handleConfirmClaim = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPlan) return;
 
@@ -117,18 +141,19 @@ export default function MonthlySalaryPage() {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      adjustUserWallet(selectedPlan.salary, "CREDIT", `মাসিক স্যালারি: ${selectedPlan.target} জন মেম্বার রেফার`);
-      setClaimSuccessMsg(
-        `অভিনন্দন! আপনার মাসিক স্যালারি ৳${selectedPlan.salary.toLocaleString()} সফলভাবে ওয়ালেটে যুক্ত হয়েছে!`
-      );
-      setIsSubmitting(false);
-
+    try {
+      const res = await salaryApi.claim();
+      setClaimSuccessMsg(res?.message || `অভিনন্দন! আপনার মাসিক স্যালারি ক্লেইম সফলভাবে জমা হয়েছে!`);
+      setHasClaimedSalary(true);
       setTimeout(() => {
         setSelectedPlan(null);
         setClaimSuccessMsg(null);
-      }, 1800);
-    }, 1000);
+      }, 2500);
+    } catch (err: any) {
+      setClaimErrorMsg(err.message || "ক্লেইম করতে সমস্যা হয়েছে");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

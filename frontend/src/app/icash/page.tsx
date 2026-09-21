@@ -28,6 +28,7 @@ import {
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { useMockStore } from "@/lib/mock-store";
+import { icashApi } from "@/lib/api-client";
 
 interface InvestmentPlan {
   years: number;
@@ -199,7 +200,7 @@ export default function ICashPage() {
   const [selectedInvestmentForInfo, setSelectedInvestmentForInfo] = useState<ActiveInvestment | null>(null);
 
   // Handle New Investment Submit
-  const handleConfirmInvestment = (e: React.FormEvent) => {
+  const handleConfirmInvestment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPlanForInvest) return;
 
@@ -216,7 +217,16 @@ export default function ICashPage() {
     setIsSubmitting(true);
     setInvestError(null);
 
-    setTimeout(() => {
+    const planIdMap: Record<number, string> = {
+      1: "1yr",
+      2: "2yr",
+      5: "5yr",
+      10: "10yr",
+    };
+    const planId = planIdMap[selectedPlanForInvest.years] || "1yr";
+
+    try {
+      await icashApi.invest({ planId, amountBDT: investAmount });
       // Deduct from wallet
       adjustUserWallet(investAmount, "DEBIT", `I Cash বিনিয়োগ (${selectedPlanForInvest.years} বছর)`);
 
@@ -263,7 +273,10 @@ export default function ICashPage() {
         setSelectedPlanForInvest(null);
         setInvestSuccess(null);
       }, 1600);
-    }, 1000);
+    } catch (err: any) {
+      setInvestError(err.message || "বিনিয়োগ করতে সমস্যা হয়েছে");
+      setIsSubmitting(false);
+    }
   };
 
   // Handle Withdraw Profit Submit

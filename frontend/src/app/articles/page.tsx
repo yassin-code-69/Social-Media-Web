@@ -66,12 +66,12 @@ export default function ArticlesPage() {
   const router = useRouter();
   const { profile, submitContentWritingPost } = useMockStore();
 
-  // Statistics State matching mockup
-  const [totalRewardPool, setTotalRewardPool] = useState("১,২৫০.০০");
-  const [totalArticles, setTotalArticles] = useState(12);
-  const [totalEarned, setTotalEarned] = useState(320);
-  const [totalReaders, setTotalReaders] = useState(8);
-  const [userTier, setUserTier] = useState("Gold");
+  // Statistics State connected to user profile
+  const [totalRewardPool, setTotalRewardPool] = useState("০.০০");
+  const [totalArticles, setTotalArticles] = useState(0);
+  const [totalEarned, setTotalEarned] = useState(profile.totalEarned || profile.balance || 0);
+  const [totalReaders, setTotalReaders] = useState(0);
+  const userTier = profile.packageName || "ফ্রি মেম্বার";
 
   // Filtering & Search
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -84,20 +84,7 @@ export default function ArticlesPage() {
   const [claimSuccess, setClaimSuccess] = useState<string | null>(null);
   const [readHistory, setReadHistory] = useState<
     { id: string; title: string; reward: number; date: string }[]
-  >([
-    {
-      id: "hist_1",
-      title: "ফ্রিল্যান্সিং ক্যারিয়ার শুরুর প্রাথমিক ধাপ",
-      reward: 12,
-      date: "আজ, সকাল ১০:১৫",
-    },
-    {
-      id: "hist_2",
-      title: "স্মার্টফোন দিয়ে প্রফেশনাল ফটো তোলার টিপস",
-      reward: 10,
-      date: "গতকাল, বিকাল ৪:৩০",
-    },
-  ]);
+  >([]);
 
   // Modals
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);

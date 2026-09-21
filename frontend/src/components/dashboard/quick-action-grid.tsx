@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMockStore } from "@/lib/mock-store";
@@ -26,6 +26,8 @@ import {
   Clock,
 } from "lucide-react";
 
+import { missionsApi, featuresApi } from "@/lib/api-client";
+
 interface ActionItem {
   id: string;
   title: string;
@@ -41,6 +43,23 @@ export function QuickActionGrid() {
   const router = useRouter();
   const { adjustUserWallet } = useMockStore();
 
+  const [featuresConfig, setFeaturesConfig] = useState<Record<string, { status: string; badge?: string }>>({});
+
+  useEffect(() => {
+    featuresApi
+      .getFeatures()
+      .then((items: any[]) => {
+        if (Array.isArray(items)) {
+          const map: Record<string, { status: string; badge?: string }> = {};
+          items.forEach((item) => {
+            map[item.id] = { status: item.status, badge: item.badge };
+          });
+          setFeaturesConfig(map);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Modals state
   const [dailyBonusClaimed, setDailyBonusClaimed] = useState(false);
   const [dailyBonusMsg, setDailyBonusMsg] = useState<string | null>(null);
@@ -52,27 +71,31 @@ export function QuickActionGrid() {
 
   const [upcomingModalOpen, setUpcomingModalOpen] = useState(false);
 
-  const handleDailyBonus = () => {
-    if (dailyBonusClaimed) {
-      setDailyBonusMsg("আজকের ডেইলি বোনাস ইতোমধ্যে ক্লেইম করা হয়েছে!");
-    } else {
-      adjustUserWallet(5, "CREDIT", "ডেইলি লগইন রিওয়ার্ড");
+  const handleDailyBonus = async () => {
+    try {
+      const res = await missionsApi.dailyCheckin();
       setDailyBonusClaimed(true);
-      setDailyBonusMsg("অভিনন্দন! আপনি আজকের ৳ ৫ ডেইলি বোনাস পেয়েছেন।");
+      setDailyBonusMsg(res?.message || "অভিনন্দন! আপনি আজকের ৳ ৫ ডেইলি বোনাস পেয়েছেন।");
+      adjustUserWallet(5, "CREDIT", "ডেইলি লগইন রিওয়ার্ড");
+    } catch (err: any) {
+      setDailyBonusMsg(err.message || "আজকের ডেইলি বোনাস ইতোমধ্যে ক্লেইম করা হয়েছে!");
     }
     setTimeout(() => setDailyBonusMsg(null), 3500);
   };
 
-  const handleGiftCodeSubmit = (e: React.FormEvent) => {
+  const handleGiftCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const code = giftCodeInput.trim().toUpperCase();
-    if (code === "DIGONTO" || code === "BONUS20" || code === "GIFT2026") {
-      adjustUserWallet(20, "CREDIT", `গিফট কোড রিডিম: ${code}`);
-      setGiftSuccess(`অভিনন্দন! "${code}" কোডটি ব্যবহার করে আপনি ৳ ২০ উপহার পেয়েছেন!`);
+    if (!code) return;
+    try {
+      const res = await missionsApi.redeemGiftCode(code);
+      const rewardAmt = Number(res?.reward?.amount || 20);
+      adjustUserWallet(rewardAmt, "CREDIT", `গিফট কোড রিডিম: ${code}`);
+      setGiftSuccess(res?.message || `অভিনন্দন! "${code}" কোডটি ব্যবহার করে আপনি উপহার পেয়েছেন!`);
       setGiftCodeInput("");
       setGiftError("");
-    } else {
-      setGiftError("ভুল কোড! সঠিক কোড দিন (ট্রাই করুন: DIGONTO)");
+    } catch (err: any) {
+      setGiftError(err.message || "ভুল কোড! সঠিক কোড দিন (যেমন: DIGONTO)");
     }
   };
 
@@ -221,48 +244,59 @@ export function QuickActionGrid() {
 
       {/* 5 Column Grid */}
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2">
-        {actions.map((item) => {
-          const IconComp = item.icon;
+        {actions
+          .filter((item) => {
+            const cfg = featuresConfig[item.id];
+            if (cfg?.status === "HIDDEN") return false;
+            return true;
+          })
+          .map((item) => {
+            const IconComp = item.icon;
+            const cfg = featuresConfig[item.id];
+            const isUpcoming = cfg ? cfg.status === "UPCOMING" : item.badge === "Upcoming" || item.subtitle === "Upcoming";
+            const badgeText = cfg?.badge !== undefined && cfg.badge !== "" ? cfg.badge : isUpcoming ? "Upcoming" : item.badge;
+            const clickHandler = isUpcoming ? () => setUpcomingModalOpen(true) : item.onClick;
+            const targetHref = isUpcoming ? undefined : item.href;
 
-          if (item.href) {
+            if (targetHref) {
+              return (
+                <Link
+                  key={item.id}
+                  href={targetHref}
+                  className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px] relative overflow-hidden"
+                >
+                  {badgeText && (
+                    <span className="absolute top-1 right-1 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[7.5px] font-black px-1.5 py-0.2 rounded-full shadow-xs tracking-tight">
+                      {badgeText}
+                    </span>
+                  )}
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${item.color}`}
+                  >
+                    <IconComp className="w-5 h-5 stroke-[2.2]" />
+                  </div>
+                  <span className="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight line-clamp-1">
+                    {item.title}
+                  </span>
+                  <span className="text-[9px] sm:text-[10px] text-slate-400 leading-tight mt-0.5 line-clamp-1">
+                    {isUpcoming ? "Upcoming" : item.subtitle}
+                  </span>
+                </Link>
+              );
+            }
+
             return (
-              <Link
+              <button
                 key={item.id}
-                href={item.href}
-                className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px] relative overflow-hidden"
+                type="button"
+                onClick={clickHandler}
+                className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px] relative overflow-hidden cursor-pointer"
               >
-                {item.badge && (
+                {badgeText && (
                   <span className="absolute top-1 right-1 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[7.5px] font-black px-1.5 py-0.2 rounded-full shadow-xs tracking-tight">
-                    {item.badge}
+                    {badgeText}
                   </span>
                 )}
-                <div
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${item.color}`}
-                >
-                  <IconComp className="w-5 h-5 stroke-[2.2]" />
-                </div>
-                <span className="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight line-clamp-1">
-                  {item.title}
-                </span>
-                <span className="text-[9px] sm:text-[10px] text-slate-400 leading-tight mt-0.5 line-clamp-1">
-                  {item.subtitle}
-                </span>
-              </Link>
-            );
-          }
-
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={item.onClick}
-              className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px] relative overflow-hidden cursor-pointer"
-            >
-              {item.badge && (
-                <span className="absolute top-1 right-1 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[7.5px] font-black px-1.5 py-0.2 rounded-full shadow-xs tracking-tight">
-                  {item.badge}
-                </span>
-              )}
               <div
                 className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${item.color}`}
               >

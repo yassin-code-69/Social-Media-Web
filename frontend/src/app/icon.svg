@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="skyBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <!-- Sun Gradient -->
+    <linearGradient id="sunGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <!-- Clip for waves if needed -->
+    <clipPath id="squircleClip">
+      <rect width="128" height="128" rx="28" />
+    </clipPath>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect width="128" height="128" rx="28" fill="url(#skyBg)" />
+
+  <!-- Rays (Golden Sun Yellow) -->
+  <!-- Top Ray -->
+  <line x1="64" y1="32" x2="64" y2="40" stroke="#fde047" stroke-width="4.5" stroke-linecap="round" />
+  <!-- Upper Left Ray -->
+  <line x1="47" y1="39" x2="52.5" y2="46" stroke="#fde047" stroke-width="4.5" stroke-linecap="round" />
+  <!-- Upper Right Ray -->
+  <line x1="81" y1="39" x2="75.5" y2="46" stroke="#fde047" stroke-width="4.5" stroke-linecap="round" />
+  <!-- Lower Left Ray -->
+  <line x1="37" y1="52" x2="44" y2="57" stroke="#fde047" stroke-width="4.5" stroke-linecap="round" />
+  <!-- Lower Right Ray -->
+  <line x1="91" y1="52" x2="84" y2="57" stroke="#fde047" stroke-width="4.5" stroke-linecap="round" />
+  <!-- Horizon Left Dash -->
+  <line x1="33" y1="67" x2="41" y2="67" stroke="#fde047" stroke-width="4.5" stroke-linecap="round" />
+  <!-- Horizon Right Dash -->
+  <line x1="87" y1="67" x2="95" y2="67" stroke="#fde047" stroke-width="4.5" stroke-linecap="round" />
+
+  <!-- The Sun -->
+  <path d="M 40 70 A 24 24 0 0 1 88 70 Z" fill="url(#sunGrad)" />
+
+  <!-- Top Ocean Wave (Cyan / Light Sky Blue) -->
+  <path 
+    d="M 32 74 
+       Q 40 68, 48 74 
+       T 64 74 
+       T 80 74 
+       T 96 74 
+       L 96 82 
+       Q 88 88, 80 82 
+       T 64 82 
+       T 48 82 
+       T 32 82 
+       Z" 
+    fill="#38bdf8" 
+  />
+
+  <!-- Bottom Ocean Wave (Vibrant Azure Ocean) -->
+  <path 
+    d="M 32 84 
+       Q 40 78, 48 84 
+       T 64 84 
+       T 80 84 
+       T 96 84 
+       L 96 92 
+       Q 88 98, 80 92 
+       T 64 92 
+       T 48 92 
+       T 32 92 
+       Z" 
+    fill="#0284c7" 
+  />
+</svg>

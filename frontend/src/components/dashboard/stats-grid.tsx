@@ -2,35 +2,50 @@
 
 import React from "react";
 import { CheckSquare, Coins, Users, Star } from "lucide-react";
+import { useMockStore } from "@/lib/mock-store";
 
 export function StatsGrid() {
+  const { profile, submissions, referrals } = useMockStore();
+
+  const completedCount =
+    profile?.completedTasksCount ||
+    submissions.filter((s) => s.status === "APPROVED").length ||
+    0;
+
+  const totalEarned = profile?.totalEarned || profile?.balance || 0;
+  const referralCount = referrals?.length || 0;
+  const packageName = profile?.packageName || "ফ্রি মেম্বার";
+
   const stats = [
     {
       id: "tasks",
       icon: CheckSquare,
       iconBg: "bg-[#4f46e5] text-white",
-      value: "12",
+      value: String(completedCount),
       label: "সম্পন্ন কাজ",
     },
     {
       id: "earnings",
       icon: Coins,
       iconBg: "bg-[#4338ca] text-white",
-      value: "৳ 320",
+      value: `৳ ${Number(totalEarned).toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })}`,
       label: "মোট আয়",
     },
     {
       id: "referrals",
       icon: Users,
       iconBg: "bg-[#059669] text-white",
-      value: "8",
+      value: String(referralCount),
       label: "মোট রেফারেল",
     },
     {
       id: "package",
       icon: Star,
       iconBg: "bg-[#f59e0b] text-white",
-      value: "Gold",
+      value: packageName,
       label: "আপনার প্যাকেজ",
     },
   ];

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { useMockStore } from "@/lib/mock-store";
+import { missionsApi } from "@/lib/api-client";
 import {
   Sparkles,
   Trophy,
@@ -92,14 +93,8 @@ const WHEEL_SLICES: WheelSlice[] = [
   },
 ];
 
-// Live simulated winners
-const LIVE_WINNERS = [
-  { name: "মো: রফিকুল ইসলাম", phone: "01789***", prize: "৳ ৫০", time: "১ মি. আগে", badge: "মেগা উইন" },
-  { name: "সাদিয়া সুলতানা", phone: "01942***", prize: "৳ ১০০", time: "৩ মি. আগে", badge: "জ্যাকপট" },
-  { name: "তানভীর হাসান", phone: "01855***", prize: "৳ ২০", time: "৫ মি. আগে", badge: "লাকি" },
-  { name: "আরিফুল ইসলাম", phone: "01622***", prize: "৳ ১৫", time: "৭ মি. আগে", badge: "বোনাস" },
-  { name: "নুসরাত জাহান", phone: "01711***", prize: "৳ ৫০", time: "১০ মি. আগে", badge: "মেগা উইন" },
-];
+// Platform winners from activity
+const LIVE_WINNERS: { name: string; phone: string; prize: string; time: string; badge: string }[] = [];
 
 export default function DailySpinPage() {
   const { profile, dailySpin, performDailySpin, resetDailySpinForTest } = useMockStore();
@@ -166,6 +161,7 @@ export default function DailySpinPage() {
       setWinningSlice(selectedSlice);
       // Perform store update
       performDailySpin(selectedSlice.amount);
+      missionsApi.luckySpin().catch(() => {});
       setShowWinModal(true);
     }, 4500);
   };
@@ -590,26 +586,32 @@ export default function DailySpinPage() {
               </div>
 
               <div className="space-y-2">
-                {LIVE_WINNERS.map((w, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#0b2654] to-[#0284c7] text-white flex items-center justify-center font-bold text-xs shadow-sm">
-                        {idx + 1}
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-800 block">{w.name}</span>
-                        <span className="text-[10px] text-slate-400">{w.phone} • {w.time}</span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-black font-inter text-emerald-600">{w.prize}</span>
-                      <span className="block text-[9px] text-amber-700 font-semibold">{w.badge}</span>
-                    </div>
+                {LIVE_WINNERS.length === 0 ? (
+                  <div className="text-center py-6 text-slate-400 text-xs">
+                    এখনও কোনো শীর্ষ উইনার তালিকা তৈরি হয়নি। চাকা ঘুরিয়ে আপনিই হোন প্রথম বিজয়ী!
                   </div>
-                ))}
+                ) : (
+                  LIVE_WINNERS.map((w, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#0b2654] to-[#0284c7] text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <span className="text-xs font-bold text-slate-800 block">{w.name}</span>
+                          <span className="text-[10px] text-slate-400">{w.phone} • {w.time}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-sm font-black font-inter text-emerald-600">{w.prize}</span>
+                        <span className="block text-[9px] text-amber-700 font-semibold">{w.badge}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

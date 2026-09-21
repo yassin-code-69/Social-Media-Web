@@ -16,6 +16,11 @@ import {
   X,
   FileCheck,
   ShieldAlert,
+  Gift,
+  CalendarDays,
+  PenTool,
+  Wallet,
+  LayoutGrid,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -34,6 +39,11 @@ export default function AdminLayout({
     { label: "ব্যবহারকারী ব্যবস্থাপনা", href: "/admin/users", icon: Users },
     { label: "প্যাকেজ কন্ট্রোল", href: "/admin/packages", icon: Package },
     { label: "টাস্ক ম্যানেজমেন্ট", href: "/admin/tasks", icon: CheckSquare },
+    { label: "কুইক অ্যাকশন ও ফিচার গ্রিড", href: "/admin/features", icon: LayoutGrid },
+    { label: "গিফট কোড কন্ট্রোল", href: "/admin/gift-codes", icon: Gift },
+    { label: "মাসিক স্যালারি ও ইনসেন্টিভ", href: "/admin/salary-claims", icon: CalendarDays },
+    { label: "কন্টেন্ট ও ভিডিও রিভিউ", href: "/admin/content-submissions", icon: PenTool },
+    { label: "I Cash ইনভেস্টমেন্ট", href: "/admin/icash", icon: Wallet },
     { label: "সিস্টেম সেটিংস", href: "/admin/settings", icon: Settings },
   ];
 

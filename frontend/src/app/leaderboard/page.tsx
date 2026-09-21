@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { useMockStore } from "@/lib/mock-store";
+import { leaderboardApi } from "@/lib/api-client";
 import {
   Trophy,
   Medal,
@@ -38,142 +39,8 @@ interface LeaderboardEntry {
   isCurrentUser?: boolean;
 }
 
-const generateLeaderboard = (period: string): LeaderboardEntry[] => {
-  const multiplier = period === "daily" ? 1 : period === "weekly" ? 5 : period === "monthly" ? 20 : 80;
+// Leaderboard dynamic data mapping
 
-  const baseData: Omit<LeaderboardEntry, "rank">[] = [
-    {
-      id: "lb_1",
-      name: "আরিফুল ইসলাম",
-      phone: "01712***45",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "প্ল্যাটিনাম",
-      totalEarned: 2850 * multiplier / 80,
-      completedTasks: Math.round(142 * multiplier / 80),
-      referrals: Math.round(38 * multiplier / 80),
-      badge: "🏆 চ্যাম্পিয়ন",
-    },
-    {
-      id: "lb_2",
-      name: "ফাতিমা আক্তার",
-      phone: "01945***12",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "গোল্ড",
-      totalEarned: 2540 * multiplier / 80,
-      completedTasks: Math.round(128 * multiplier / 80),
-      referrals: Math.round(32 * multiplier / 80),
-      badge: "🥈 রানার-আপ",
-    },
-    {
-      id: "lb_3",
-      name: "মোহাম্মদ রাকিব",
-      phone: "01678***89",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "গোল্ড",
-      totalEarned: 2180 * multiplier / 80,
-      completedTasks: Math.round(115 * multiplier / 80),
-      referrals: Math.round(27 * multiplier / 80),
-      badge: "🥉 ৩য় স্থান",
-    },
-    {
-      id: "lb_4",
-      name: "নুসরাত জাহান",
-      phone: "01856***34",
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "প্ল্যাটিনাম",
-      totalEarned: 1920 * multiplier / 80,
-      completedTasks: Math.round(98 * multiplier / 80),
-      referrals: Math.round(22 * multiplier / 80),
-    },
-    {
-      id: "lb_5",
-      name: "তানভীর হাসান",
-      phone: "01534***67",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "সিলভার",
-      totalEarned: 1650 * multiplier / 80,
-      completedTasks: Math.round(86 * multiplier / 80),
-      referrals: Math.round(18 * multiplier / 80),
-    },
-    {
-      id: "lb_6",
-      name: "রুমানা সিদ্দিকা",
-      phone: "01923***90",
-      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "গোল্ড",
-      totalEarned: 1420 * multiplier / 80,
-      completedTasks: Math.round(78 * multiplier / 80),
-      referrals: Math.round(15 * multiplier / 80),
-    },
-    {
-      id: "lb_7",
-      name: "শামীম আহমেদ",
-      phone: "01645***23",
-      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "সিলভার",
-      totalEarned: 1180 * multiplier / 80,
-      completedTasks: Math.round(65 * multiplier / 80),
-      referrals: Math.round(12 * multiplier / 80),
-    },
-    {
-      id: "lb_8",
-      name: "তামিম ইসলাম",
-      phone: "01789***56",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "গোল্ড",
-      totalEarned: 980 * multiplier / 80,
-      completedTasks: Math.round(52 * multiplier / 80),
-      referrals: Math.round(10 * multiplier / 80),
-      isCurrentUser: true,
-    },
-    {
-      id: "lb_9",
-      name: "সাব্বির হোসেন",
-      phone: "01478***01",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "ব্রোঞ্জ",
-      totalEarned: 760 * multiplier / 80,
-      completedTasks: Math.round(42 * multiplier / 80),
-      referrals: Math.round(8 * multiplier / 80),
-    },
-    {
-      id: "lb_10",
-      name: "আয়েশা সুলতানা",
-      phone: "01367***78",
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "সিলভার",
-      totalEarned: 540 * multiplier / 80,
-      completedTasks: Math.round(35 * multiplier / 80),
-      referrals: Math.round(6 * multiplier / 80),
-    },
-    {
-      id: "lb_11",
-      name: "রাফি উদ্দিন",
-      phone: "01256***45",
-      avatar: "https://images.unsplash.com/photo-1599566150163-29194dcabd9c?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "ব্রোঞ্জ",
-      totalEarned: 380 * multiplier / 80,
-      completedTasks: Math.round(25 * multiplier / 80),
-      referrals: Math.round(4 * multiplier / 80),
-    },
-    {
-      id: "lb_12",
-      name: "মিতু রহমান",
-      phone: "01189***32",
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=100&h=100&q=80",
-      packageName: "ফ্রি",
-      totalEarned: 210 * multiplier / 80,
-      completedTasks: Math.round(18 * multiplier / 80),
-      referrals: Math.round(2 * multiplier / 80),
-    },
-  ];
-
-  return baseData.map((entry, idx) => ({
-    ...entry,
-    rank: idx + 1,
-    totalEarned: Math.round(entry.totalEarned * 100) / 100,
-  }));
-};
 
 // Period tab configs
 const PERIOD_TABS = [
@@ -240,8 +107,56 @@ const getRankStyle = (rank: number) => {
 export default function LeaderboardPage() {
   const { profile } = useMockStore();
   const [activePeriod, setActivePeriod] = useState<string>("weekly");
+  const [liveUsers, setLiveUsers] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const leaderboard = useMemo(() => generateLeaderboard(activePeriod), [activePeriod]);
+  useEffect(() => {
+    leaderboardApi
+      .getLeaderboard()
+      .then((res: any) => {
+        const data = Array.isArray(res) ? res : res?.data || [];
+        if (Array.isArray(data)) {
+          const mapped: LeaderboardEntry[] = data.map((u: any, idx: number) => ({
+            id: u.id || `lb_${idx}`,
+            rank: idx + 1,
+            name: u.name || "মেম্বার",
+            phone: u.phone || "017********",
+            avatar: u.avatar || "",
+            packageName: u.packageName || "সদস্য",
+            totalEarned: Number(u.totalEarned || 0),
+            completedTasks: Number(u.completedTasks || 0),
+            referrals: Number(u.referrals || 0),
+            badge: idx === 0 ? "🏆 চ্যাম্পিয়ন" : idx === 1 ? "🥈 রানার-আপ" : idx === 2 ? "🥉 ৩য় স্থান" : undefined,
+            isCurrentUser: (profile?.phone && u.phone && u.phone.replace(/\*/g, "") === (profile.phone.slice(0, 5) + profile.phone.slice(-2))) || (profile?.id && u.id === profile.id),
+          }));
+          setLiveUsers(mapped);
+        }
+      })
+      .catch((err) => console.error("Failed to load leaderboard:", err))
+      .finally(() => setLoading(false));
+  }, [profile]);
+
+  const leaderboard = useMemo(() => {
+    if (liveUsers.length > 0) return liveUsers;
+    if (profile?.name) {
+      return [
+        {
+          id: profile.id || "me",
+          rank: 1,
+          name: profile.name,
+          phone: profile.phone ? `${profile.phone.slice(0, 5)}***${profile.phone.slice(-2)}` : "017********",
+          avatar: profile.avatar || "",
+          packageName: profile.packageName || "সদস্য",
+          totalEarned: profile.totalEarned || profile.balance || 0,
+          completedTasks: profile.completedTasksCount || 0,
+          referrals: 0,
+          badge: "🏆 লিডার",
+          isCurrentUser: true,
+        },
+      ];
+    }
+    return [];
+  }, [liveUsers, profile]);
 
   const top3 = leaderboard.slice(0, 3);
   const rest = leaderboard.slice(3);
@@ -385,12 +300,16 @@ export default function LeaderboardPage() {
           <div className="px-4 mt-3">
             <div className="bg-gradient-to-r from-[#0b2654] to-[#1e5eb3] rounded-2xl p-3.5 shadow-md flex items-center justify-between gap-3 border border-sky-400/20">
               <div className="flex items-center gap-3">
-                <div className="relative w-11 h-11 rounded-full ring-2 ring-amber-400 overflow-hidden shrink-0">
-                  <img
-                    src={currentUserEntry.avatar}
-                    alt={currentUserEntry.name}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative w-11 h-11 rounded-full ring-2 ring-amber-400 overflow-hidden shrink-0 bg-[#0b2654] flex items-center justify-center text-white font-bold text-sm">
+                  {currentUserEntry.avatar ? (
+                    <img
+                      src={currentUserEntry.avatar}
+                      alt={currentUserEntry.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span>{(currentUserEntry.name || "U").charAt(0).toUpperCase()}</span>
+                  )}
                 </div>
                 <div className="text-white">
                   <div className="flex items-center gap-1.5">
@@ -454,15 +373,18 @@ export default function LeaderboardPage() {
                   {entry.rank}
                 </div>
 
-                {/* Avatar */}
-                <div className={`relative shrink-0 w-10 h-10 rounded-full overflow-hidden ring-2 ${
+                <div className={`relative shrink-0 w-10 h-10 rounded-full overflow-hidden ring-2 bg-slate-100 flex items-center justify-center text-slate-700 font-bold text-xs ${
                   isTop3 ? "ring-amber-300" : isMe ? "ring-sky-400" : "ring-slate-200"
                 }`}>
-                  <img
-                    src={entry.avatar}
-                    alt={entry.name}
-                    className="w-full h-full object-cover"
-                  />
+                  {entry.avatar ? (
+                    <img
+                      src={entry.avatar}
+                      alt={entry.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span>{(entry.name || "U").charAt(0).toUpperCase()}</span>
+                  )}
                   {isMe && (
                     <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-sky-500 border-2 border-white flex items-center justify-center">
                       <Star className="w-2 h-2 text-white fill-white" />

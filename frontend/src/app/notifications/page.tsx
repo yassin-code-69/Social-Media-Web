@@ -7,16 +7,7 @@ import { useMockStore } from "@/lib/mock-store";
 import { Bell, CheckCheck, CheckCircle2, Wallet, Users, Info } from "lucide-react";
 
 export default function NotificationsPage() {
-  const { notifications } = useMockStore();
-  const [list, setList] = useState(notifications);
-
-  const handleMarkAllRead = () => {
-    setList(list.map((n) => ({ ...n, read: true })));
-  };
-
-  const toggleRead = (id: string) => {
-    setList(list.map((n) => (n.id === id ? { ...n, read: true } : n)));
-  };
+  const { notifications, markNotificationAsRead, markAllNotificationsAsRead } = useMockStore();
 
   return (
     <div className="w-full min-h-screen bg-[#dff0f8] flex flex-col">
@@ -29,27 +20,40 @@ export default function NotificationsPage() {
               <Bell className="w-4 h-4 text-[#1e5eb3]" />
               <span>বিজ্ঞপ্তি (Notifications)</span>
             </h2>
-            <button
-              type="button"
-              onClick={handleMarkAllRead}
-              className="text-xs font-semibold text-[#1e5eb3] hover:underline flex items-center gap-1"
-            >
-              <CheckCheck className="w-3.5 h-3.5" />
-              <span>সব পড়া হয়েছে</span>
-            </button>
+            {notifications.length > 0 && (
+              <button
+                type="button"
+                onClick={markAllNotificationsAsRead}
+                className="text-xs font-semibold text-[#1e5eb3] hover:underline flex items-center gap-1"
+              >
+                <CheckCheck className="w-3.5 h-3.5" />
+                <span>সব পড়া হয়েছে</span>
+              </button>
+            )}
           </div>
 
           <div className="flex flex-col gap-2">
-            {list.map((n) => (
-              <div
-                key={n.id}
-                onClick={() => toggleRead(n.id)}
-                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
-                  n.read
-                    ? "bg-white border-slate-100 opacity-80"
-                    : "bg-white border-sky-200 shadow-sm ring-1 ring-sky-300/30"
-                }`}
-              >
+            {notifications.length === 0 ? (
+              <div className="bg-white rounded-2xl p-8 text-center border border-slate-100 shadow-sm flex flex-col items-center justify-center my-6">
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-500 flex items-center justify-center mb-3">
+                  <Bell className="w-6 h-6" />
+                </div>
+                <h3 className="font-bold text-sm text-slate-800">কোনো নতুন বিজ্ঞপ্তি নেই</h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  আপনার অ্যাকাউন্টের কোনো আপডেট বা নোটিফিকেশন আসলে এখানে দেখা যাবে।
+                </p>
+              </div>
+            ) : (
+              notifications.map((n) => (
+                <div
+                  key={n.id}
+                  onClick={() => markNotificationAsRead(n.id)}
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
+                    n.read
+                      ? "bg-white border-slate-100 opacity-80"
+                      : "bg-white border-sky-200 shadow-sm ring-1 ring-sky-300/30"
+                  }`}
+                >
                 <div
                   className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
                     n.type === "TASK"
@@ -84,7 +88,8 @@ export default function NotificationsPage() {
                   </span>
                 </div>
               </div>
-            ))}
+            ))
+          )}
           </div>
         </main>
 

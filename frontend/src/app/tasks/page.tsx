@@ -67,9 +67,7 @@ export default function TasksPage() {
 
   const [submitModalOpen, setSubmitModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<TaskItem | null>(null);
-  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(
-    "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=600&q=80"
-  );
+  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
   const [userNote, setUserNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccessMsg, setSubmitSuccessMsg] = useState<string | null>(null);

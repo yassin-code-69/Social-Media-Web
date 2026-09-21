@@ -20,6 +20,7 @@ import {
 import { useMockStore } from "@/lib/mock-store";
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { missionsApi } from "@/lib/api-client";
 
 export default function MissionCenterPage() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function MissionCenterPage() {
     resetDailyCheckInForTest,
     tasks,
     submissions,
+    adjustUserWallet,
   } = useMockStore();
 
   const [activeTab, setActiveTab] = useState<"in_progress" | "past">("in_progress");
@@ -47,28 +49,30 @@ export default function MissionCenterPage() {
   const isCheckedInToday = dailyCheckIn.lastCheckInDate === todayStr;
   const isStreakFinished = dailyCheckIn.currentDay > 7 || dailyCheckIn.history.length >= 7;
 
-  const handleCheckInClick = () => {
+  const handleCheckInClick = async () => {
     if (!isPremium) {
       setShowPremiumModal(true);
       return;
     }
 
     const currentDayTarget = dailyCheckIn.currentDay;
-    const result = performDailyCheckIn();
 
-    if (result.success) {
+    try {
+      const apiRes = await missionsApi.dailyCheckin();
+      performDailyCheckIn();
+      adjustUserWallet(5, "CREDIT", "দৈনিক চেক-ইন বোনাস");
       setJustClaimedDay(currentDayTarget);
       setFeedbackMsg({
         type: "success",
-        text: result.message,
+        text: apiRes?.message || "অভিনন্দন! আপনি আজকের ৳ ৫ ডেইলি বোনাস পেয়েছেন।",
       });
       setTimeout(() => {
         setJustClaimedDay(null);
       }, 3000);
-    } else {
+    } catch (err: any) {
       setFeedbackMsg({
         type: "error",
-        text: result.message,
+        text: err.message || "আজকের বোনাস ইতোমধ্যে ক্লেইম করা হয়েছে।",
       });
     }
 

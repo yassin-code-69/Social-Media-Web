@@ -308,7 +308,7 @@ export default function PackagesPage() {
               className="bg-white rounded-2xl p-3 shadow-sm border border-emerald-200 hover:border-emerald-400 transition-all flex items-center justify-between gap-2.5 cursor-pointer group"
             >
               {/* Left 3D Isometric Green Cube */}
-              <div className="w-15 h-15 sm:w-16 sm:h-16 flex-shrink-0 relative flex items-center justify-center">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 max-w-[56px] max-h-[56px] flex-shrink-0 relative flex items-center justify-center">
                 <svg viewBox="0 0 70 70" className="w-full h-full drop-shadow-sm group-hover:scale-105 transition-transform">
                   {/* Top Face */}
                   <polygon points="35,10 58,22 35,34 12,22" fill="#34d399" />
@@ -327,32 +327,32 @@ export default function PackagesPage() {
               </div>
 
               {/* Middle Details */}
-              <div className="flex-1 min-w-0 space-y-0.5">
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-bengali">
+              <div className="flex-1 min-w-0 space-y-1">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-bengali truncate">
                   500 টাকার প্যাকেজ ক্রয় করলে
                 </h3>
                 <div>
-                  <span className="bg-[#059669] text-white font-extrabold text-xs px-2.5 py-0.5 rounded-full inline-block shadow-2xs font-bengali">
+                  <span className="bg-[#059669] text-white font-extrabold text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full inline-block shadow-2xs font-bengali">
                     প্রতিদিন 2%
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-600 font-bengali leading-snug">
-                  টাস্কের কাজ পাবেন এবং ইনকাম পাবেন (দিগন্ত স্তরের ব্যালেন্সের উপর)
+                <p className="text-[10px] text-slate-600 font-bengali leading-tight">
+                  টাস্কের কাজ ও ব্যালেন্স অনুযায়ী ইনকাম
                 </p>
               </div>
 
               {/* Right Side: Daily Tasks Box */}
-              <div className="flex flex-col items-center justify-center text-center pl-2 border-l border-slate-100 min-w-[85px] sm:min-w-[95px] flex-shrink-0">
-                <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center mb-1">
+              <div className="flex flex-col items-center justify-center text-center pl-2 border-l border-slate-100 min-w-[75px] sm:min-w-[85px] flex-shrink-0">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center mb-0.5">
                   <CalendarCheck className="w-3.5 h-3.5 stroke-[2.5]" />
                 </div>
-                <div className="text-[9.5px] font-medium text-slate-500 font-bengali">
-                  দৈনিক টাস্ক সংখ্যা
+                <div className="text-[9px] font-medium text-slate-500 font-bengali">
+                  দৈনিক টাস্ক
                 </div>
                 <div className="text-xs sm:text-sm font-black text-slate-900 font-bengali leading-tight mt-0.5">
                   1 - 5 টি
                 </div>
-                <div className="text-[9px] text-slate-400 font-bengali">
+                <div className="text-[8.5px] text-slate-400 font-bengali">
                   (2% এর জন্য)
                 </div>
               </div>
@@ -364,7 +364,7 @@ export default function PackagesPage() {
               className="bg-white rounded-2xl p-3 shadow-sm border border-blue-200 hover:border-blue-400 transition-all flex items-center justify-between gap-2.5 cursor-pointer group"
             >
               {/* Left 3D Isometric Blue Cube */}
-              <div className="w-15 h-15 sm:w-16 sm:h-16 flex-shrink-0 relative flex items-center justify-center">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 max-w-[56px] max-h-[56px] flex-shrink-0 relative flex items-center justify-center">
                 <svg viewBox="0 0 70 70" className="w-full h-full drop-shadow-sm group-hover:scale-105 transition-transform">
                   {/* Top Face */}
                   <polygon points="35,10 58,22 35,34 12,22" fill="#60a5fa" />
@@ -383,32 +383,32 @@ export default function PackagesPage() {
               </div>
 
               {/* Middle Details */}
-              <div className="flex-1 min-w-0 space-y-0.5">
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-bengali">
+              <div className="flex-1 min-w-0 space-y-1">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-bengali truncate">
                   1,000 টাকার প্যাকেজ ক্রয় করলে
                 </h3>
                 <div>
-                  <span className="bg-[#1d4ed8] text-white font-extrabold text-xs px-2.5 py-0.5 rounded-full inline-block shadow-2xs font-bengali">
+                  <span className="bg-[#1d4ed8] text-white font-extrabold text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full inline-block shadow-2xs font-bengali">
                     প্রতিদিন 2.5%
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-600 font-bengali leading-snug">
-                  টাস্কের কাজ পাবেন এবং ইনকাম পাবেন (দিগন্ত স্তরের ব্যালেন্সের উপর)
+                <p className="text-[10px] text-slate-600 font-bengali leading-tight">
+                  টাস্কের কাজ ও ব্যালেন্স অনুযায়ী ইনকাম
                 </p>
               </div>
 
               {/* Right Side: Daily Tasks Box */}
-              <div className="flex flex-col items-center justify-center text-center pl-2 border-l border-slate-100 min-w-[85px] sm:min-w-[95px] flex-shrink-0">
-                <div className="w-6 h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-1">
+              <div className="flex flex-col items-center justify-center text-center pl-2 border-l border-slate-100 min-w-[75px] sm:min-w-[85px] flex-shrink-0">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center mb-0.5">
                   <CalendarCheck className="w-3.5 h-3.5 stroke-[2.5]" />
                 </div>
-                <div className="text-[9.5px] font-medium text-slate-500 font-bengali">
-                  দৈনিক টাস্ক সংখ্যা
+                <div className="text-[9px] font-medium text-slate-500 font-bengali">
+                  দৈনিক টাস্ক
                 </div>
                 <div className="text-xs sm:text-sm font-black text-slate-900 font-bengali leading-tight mt-0.5">
                   5 - 10 টি
                 </div>
-                <div className="text-[9px] text-slate-400 font-bengali">
+                <div className="text-[8.5px] text-slate-400 font-bengali">
                   (2.5% এর জন্য)
                 </div>
               </div>

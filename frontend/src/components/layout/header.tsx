@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useMockStore } from "@/lib/mock-store";
+import { authApi } from "@/lib/api-client";
 import {
   Menu,
   Bell,
@@ -28,10 +31,22 @@ import {
   BookOpen,
   DollarSign,
   TrendingUp,
+  LogOut,
 } from "lucide-react";
 
 export function Header() {
+  const router = useRouter();
+  const { profile, notifications } = useMockStore();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const unreadCount = notifications ? notifications.filter((n) => !n.read).length : 0;
+  const isAdmin = profile.role === "ADMIN" || (profile.role as any) === "SUPER_ADMIN";
+
+  const handleLogout = async () => {
+    setDrawerOpen(false);
+    await authApi.logout();
+    router.push("/login");
+  };
 
   const menuLinks = [
     { label: "হোম ড্যাশবোর্ড", href: "/", icon: Home },
@@ -71,19 +86,14 @@ export function Header() {
             <Menu className="w-6 h-6 text-white" />
           </button>
 
-          {/* Brand Logo & Slogan */}
-          <Link href="/" className="flex items-center gap-2 group">
-            {/* Custom SVG Logo: Sun rising over waves */}
-            <div className="relative w-9 h-9 flex-shrink-0 transition-transform group-hover:scale-105">
-              <svg
-                viewBox="0 0 100 100"
-                className="w-full h-full drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Sun rays */}
-                <g stroke="#f59e0b" strokeWidth="4" strokeLinecap="round">
-                  <line x1="50" y1="12" x2="50" y2="2" />
+          {/* Logo and Brand Name */}
+          <Link href="/" className="flex items-center gap-2 select-none group">
+            {/* Custom SVG Sunrise Logo */}
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0284c7] via-[#0369a1] to-[#075985] p-1.5 shadow-md flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+              <svg viewBox="0 0 100 100" className="w-full h-full" fill="none">
+                {/* Rays */}
+                <g stroke="#fef08a" strokeWidth="4" strokeLinecap="round">
+                  <line x1="50" y1="12" x2="50" y2="4" />
                   <line x1="68" y1="17" x2="75" y2="9" />
                   <line x1="82" y1="31" x2="90" y2="24" />
                   <line x1="88" y1="49" x2="98" y2="49" />
@@ -129,21 +139,27 @@ export function Header() {
               className="relative p-1.5 rounded-full hover:bg-white/10 active:scale-95 transition-transform"
             >
               <Bell className="w-6 h-6 text-white" />
-              <span className="absolute -top-0.5 -right-0.5 bg-[#ef4444] text-white font-bold text-[10px] w-4 h-4 rounded-full flex items-center justify-center border-2 border-[#0b2654]">
-                3
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-[#ef4444] text-white font-bold text-[10px] min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center border-2 border-[#0b2654]">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
             </Link>
 
             {/* User Profile Avatar */}
             <Link
               href="/profile"
-              className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/80 shadow-sm flex-shrink-0 cursor-pointer active:scale-95 transition-transform bg-slate-200 block"
+              className="w-9 h-9 rounded-full overflow-hidden border-2 border-white/80 shadow-sm flex-shrink-0 cursor-pointer active:scale-95 transition-transform bg-[#0b2654] flex items-center justify-center text-white font-bold text-xs"
             >
-              <img
-                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80"
-                alt="তামিম ইসলাম"
-                className="w-full h-full object-cover"
-              />
+              {profile.avatar && (profile.avatar.startsWith("http") || profile.avatar.startsWith("data:")) ? (
+                <img
+                  src={profile.avatar}
+                  alt={profile.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-5 h-5 text-white/90" />
+              )}
             </Link>
           </div>
         </div>
@@ -164,11 +180,13 @@ export function Header() {
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-[#1e5eb3] flex items-center justify-center font-bold text-sm">
-                    দ
+                    {(profile.name || "দ").charAt(0)}
                   </div>
-                  <div>
-                    <h3 className="font-bold text-sm">দিগন্ত মেনু</h3>
-                    <span className="text-[10px] text-sky-200">আজকের কাজ, আগামীর সমৃদ্ধি</span>
+                  <div className="min-w-0">
+                    <h3 className="font-bold text-sm truncate">{profile.name || "স্বাগতম"}</h3>
+                    <span className="text-[10px] text-sky-200">
+                      ID: {profile.referralCode || profile.id}
+                    </span>
                   </div>
                 </div>
                 <button
@@ -181,7 +199,7 @@ export function Header() {
               </div>
 
               {/* Navigation Links */}
-              <nav className="space-y-1 max-h-[60vh] overflow-y-auto pr-1">
+              <nav className="space-y-1 max-h-[58vh] overflow-y-auto pr-1">
                 {menuLinks.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -202,19 +220,33 @@ export function Header() {
               </nav>
             </div>
 
-            {/* Admin Switch Link */}
-            <div className="pt-3 border-t border-white/10">
-              <Link
-                href="/admin/dashboard"
-                onClick={() => setDrawerOpen(false)}
-                className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs shadow-md transition-transform active:scale-95"
+            {/* Bottom Actions: Admin Switch & Logout */}
+            <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
+              {isAdmin && (
+                <Link
+                  href="/admin/dashboard"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs shadow-md transition-transform active:scale-95"
+                >
+                  <div className="flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4" />
+                    <span>অ্যাডমিন কন্ট্রোল প্যানেল</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              )}
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-red-500/20 text-rose-300 font-semibold text-xs transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4" />
-                  <span>অ্যাডমিন কন্ট্রোল প্যানেল</span>
+                  <LogOut className="w-4 h-4 text-rose-400" />
+                  <span>লগআউট</span>
                 </div>
-                <ChevronRight className="w-4 h-4" />
-              </Link>
+                <ChevronRight className="w-4 h-4 opacity-50" />
+              </button>
             </div>
           </div>
         </div>

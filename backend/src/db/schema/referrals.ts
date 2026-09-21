@@ -1,4 +1,5 @@
 import { pgTable, uuid, bigint, timestamp } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { profiles } from "./profiles";
 
 export const referrals = pgTable("referrals", {
@@ -10,7 +11,7 @@ export const referrals = pgTable("referrals", {
     .references(() => profiles.id, { onDelete: "cascade" })
     .unique()
     .notNull(),
-  rewardPaidMinor: bigint("reward_paid_minor", { mode: "bigint" }).default(0n).notNull(),
+  rewardPaidMinor: bigint("reward_paid_minor", { mode: "bigint" }).default(sql`0`).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
 

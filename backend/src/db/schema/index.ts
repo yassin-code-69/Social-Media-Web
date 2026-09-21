@@ -8,6 +8,10 @@ import { paymentMethods, deposits, withdrawals } from "./finances";
 import { referrals } from "./referrals";
 import { notifications } from "./notifications";
 import { systemSettings, auditLogs } from "./settings";
+import { icashPlans, icashInvestments } from "./icash";
+import { monthlySalaryClaims, incentiveClaims } from "./salary";
+import { dailyCheckins, luckySpins, giftCodes, giftCodeRedemptions } from "./missions";
+import { contentSubmissions } from "./content";
 
 export * from "./enums";
 export * from "./profiles";
@@ -19,6 +23,10 @@ export * from "./finances";
 export * from "./referrals";
 export * from "./notifications";
 export * from "./settings";
+export * from "./icash";
+export * from "./salary";
+export * from "./missions";
+export * from "./content";
 
 // Drizzle Table Relations
 export const profilesRelations = relations(profiles, ({ one, many }) => ({

@@ -235,7 +235,7 @@ export default function SurveyPage() {
               {/* Left Side: Checklist Graphic + Title + Subtitle */}
               <div className="flex items-center gap-3 min-w-0">
                 {/* Clipboard with Checklist Vector Graphic */}
-                <div className="w-15 h-16 flex-shrink-0 relative flex items-center justify-center">
+                <div className="w-14 h-16 max-w-[56px] flex-shrink-0 relative flex items-center justify-center">
                   <svg viewBox="0 0 54 58" className="w-full h-full drop-shadow">
                     {/* Blue Clipboard Sheet */}
                     <rect x="6" y="8" width="40" height="46" rx="5" fill="#0284c7" />
