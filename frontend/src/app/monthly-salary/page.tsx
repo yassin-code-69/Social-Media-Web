@@ -23,6 +23,7 @@ import {
   Info,
   DollarSign,
   Share2,
+  Banknote,
 } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { BottomNav } from "@/components/layout/bottom-nav";
@@ -62,6 +63,7 @@ export default function MonthlySalaryPage() {
       numColor: "text-[#047857]",
       bannerBg: "bg-[#047857]",
       subColor: "text-emerald-100",
+      rewardIconType: "cash",
       type: "green",
     },
     {
@@ -73,6 +75,7 @@ export default function MonthlySalaryPage() {
       numColor: "text-[#1d4ed8]",
       bannerBg: "bg-[#1d4ed8]",
       subColor: "text-blue-100",
+      rewardIconType: "coins",
       type: "blue",
     },
     {
@@ -84,6 +87,7 @@ export default function MonthlySalaryPage() {
       numColor: "text-[#7e22ce]",
       bannerBg: "bg-[#6b21a8]",
       subColor: "text-purple-100",
+      rewardIconType: "coins",
       type: "purple",
     },
   ];
@@ -135,17 +139,17 @@ export default function MonthlySalaryPage() {
         <Header />
 
         {/* Main Body Content */}
-        <div className="px-3 pt-3 pb-6 space-y-3.5">
+        <div className="px-3.5 pt-3 pb-6 space-y-3.5">
           {/* ========================================================
               SECTION 1: HERO BANNER (আপনার টিম বড় করুন)
               ======================================================== */}
-          <div className="bg-gradient-to-r from-[#dff2fd] via-[#eef8fe] to-[#d2edfd] rounded-3xl p-3.5 sm:p-4 shadow-sm border border-sky-300/90 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-[#dff2fd] via-[#eef8fe] to-[#d2edfd] rounded-3xl p-3 sm:p-3.5 shadow-sm border border-sky-300/90 relative overflow-hidden">
             {/* Ambient Background Glow */}
             <div className="absolute -top-12 -left-12 w-44 h-44 bg-blue-400/15 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="flex items-center justify-between gap-2 relative z-10">
+            <div className="flex items-center justify-between gap-1.5 sm:gap-2 relative z-10">
               {/* Left Side: 3D Blue Money Bag with Coins & Plant */}
-              <div className="w-18 h-20 sm:w-22 sm:h-24 flex-shrink-0 relative flex items-center justify-center">
+              <div className="w-[74px] h-[78px] sm:w-[84px] sm:h-[86px] flex-shrink-0 relative flex items-center justify-center">
                 <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-md overflow-visible">
                   {/* Upward Growth Arrow in Background */}
                   <path
@@ -192,11 +196,9 @@ export default function MonthlySalaryPage() {
 
                   {/* Stack of Gold Coins on Left & Front */}
                   <g transform="translate(18, 58)">
-                    {/* Coin 1 */}
                     <ellipse cx="14" cy="22" rx="11" ry="4.5" fill="#f59e0b" />
                     <rect x="3" y="16" width="22" height="6" fill="#d97706" />
                     <ellipse cx="14" cy="16" rx="11" ry="4.5" fill="#fbbf24" />
-                    {/* Coin 2 */}
                     <ellipse cx="14" cy="11" rx="11" ry="4.5" fill="#f59e0b" />
                     <rect x="3" y="5" width="22" height="6" fill="#d97706" />
                     <ellipse cx="14" cy="5" rx="11" ry="4.5" fill="#fde047" />
@@ -225,41 +227,41 @@ export default function MonthlySalaryPage() {
               </div>
 
               {/* Middle Title & Description */}
-              <div className="min-w-0 flex-1 px-1">
-                <h1 className="text-xl sm:text-[23px] font-extrabold text-[#0b2654] leading-tight font-bengali">
+              <div className="min-w-0 flex-1 px-0.5">
+                <h1 className="text-[17px] sm:text-[20px] font-extrabold text-[#0b2654] leading-tight font-bengali whitespace-nowrap">
                   আপনার টিম বড় করুন
                 </h1>
 
                 {/* Slogan Pill */}
                 <div className="my-1">
-                  <span className="bg-[#fde047] text-[#854d0e] font-extrabold text-[11px] sm:text-xs px-3 py-0.5 rounded-full shadow-2xs font-bengali inline-block">
+                  <span className="bg-[#fde047] text-[#854d0e] font-extrabold text-[10.5px] sm:text-[11.5px] px-2.5 py-0.5 rounded-full shadow-2xs font-bengali inline-block">
                     মাসে মাসে পান আকর্ষণীয় স্যালারি
                   </span>
                 </div>
 
-                <p className="text-[10.5px] sm:text-[11.5px] text-slate-700 font-bengali leading-snug">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-700 font-bengali leading-snug">
                   প্রিমিয়াম মেম্বার রেফার করুন এবং নিয়মিত পেয়ে যান মাসিক স্যালারি
                 </p>
               </div>
 
-              {/* Right Side: Brush Splash / Stamp Badge (বড় টিম বড় আয়) */}
-              <div className="flex-shrink-0 w-20 sm:w-24 relative flex items-center justify-center">
-                <div className="bg-gradient-to-br from-[#1d4ed8] via-[#1e40af] to-[#0b2654] text-white p-2.5 rounded-2xl shadow-md border-2 border-sky-300 text-center w-full relative overflow-hidden -rotate-2 hover:rotate-0 transition-transform">
+              {/* Right Side: Textured Royal Blue Brush Stamp Badge (বড় টিম বড় আয়) */}
+              <div className="flex-shrink-0 w-[74px] sm:w-[82px] relative flex items-center justify-center">
+                <div className="bg-gradient-to-b from-[#1b52bc] via-[#16439c] to-[#0c2b66] text-white p-2 rounded-2xl shadow-md border-2 border-sky-300 text-center w-full relative overflow-hidden -rotate-1 hover:rotate-0 transition-transform">
                   {/* Ambient starburst glow */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
 
                   {/* Golden Crown on top */}
                   <div className="flex justify-center mb-0.5">
-                    <Crown className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <Crown className="w-4 h-4 text-amber-300 fill-amber-300" />
                   </div>
 
                   {/* White text: বড় টিম */}
-                  <div className="text-xs sm:text-sm font-extrabold text-white leading-tight font-bengali">
+                  <div className="text-[11px] sm:text-xs font-black text-white leading-tight font-bengali">
                     বড় টিম
                   </div>
 
                   {/* Yellow text: বড় আয় */}
-                  <div className="text-xs sm:text-sm font-black text-[#fde047] leading-tight font-bengali mt-0.5">
+                  <div className="text-[11px] sm:text-xs font-black text-[#fde047] leading-tight font-bengali mt-0.5">
                     বড় আয়
                   </div>
                 </div>
@@ -270,10 +272,10 @@ export default function MonthlySalaryPage() {
           {/* ========================================================
               SECTION 2: MONTHLY SALARY PLAN (3 CARDS GRID)
               ======================================================== */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {/* Section Header */}
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0">
+              <div className="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
                 <UserCheck className="w-4 h-4" />
               </div>
               <div>
@@ -288,74 +290,76 @@ export default function MonthlySalaryPage() {
 
             {/* 3 Salary Cards Grid */}
             <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
-              {salaryPlans.map((plan) => {
-                const isEligible = totalPremiumReferrals >= plan.target;
-
-                return (
-                  <div
-                    key={plan.id}
-                    onClick={() => handleClaimSalary(plan)}
-                    className={`bg-white rounded-2xl border-2 ${plan.borderColor} shadow-xs flex flex-col justify-between overflow-hidden text-center cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all group relative`}
-                  >
-                    {/* Top Body */}
-                    <div className="p-2 sm:p-2.5 space-y-1">
-                      {/* Group of 3 People Icon */}
-                      <div className="flex justify-center pt-0.5">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${plan.iconColor} bg-slate-50 group-hover:scale-110 transition-transform`}>
-                          <Users className="w-5 h-5 stroke-[2.5]" />
-                        </div>
-                      </div>
-
-                      {/* Number Target */}
-                      <div className={`text-base sm:text-lg font-black ${plan.numColor} font-bengali leading-tight`}>
-                        {plan.target} জন
-                      </div>
-
-                      {/* Label */}
-                      <div className="text-[9px] sm:text-[10px] text-slate-600 font-bengali leading-tight">
-                        প্রিমিয়াম মেম্বার রেফার
+              {salaryPlans.map((plan) => (
+                <div
+                  key={plan.id}
+                  onClick={() => handleClaimSalary(plan)}
+                  className={`bg-white rounded-2xl border-2 ${plan.borderColor} shadow-xs flex flex-col justify-between overflow-hidden text-center cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all group relative`}
+                >
+                  {/* Top Body */}
+                  <div className="p-2 sm:p-2.5 space-y-1">
+                    {/* Group of 3 People Icon */}
+                    <div className="flex justify-center pt-0.5">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${plan.iconColor} bg-slate-50 group-hover:scale-110 transition-transform`}>
+                        <Users className="w-5 h-5 stroke-[2.5]" />
                       </div>
                     </div>
 
-                    {/* Bottom Colored Banner */}
-                    <div className={`${plan.bannerBg} text-white p-2 rounded-b-xl space-y-0.5 shadow-inner`}>
-                      <div className={`text-[8.5px] sm:text-[9px] ${plan.subColor} font-bengali`}>
-                        প্রতি মাসে স্যালারি
-                      </div>
-                      <div className="text-xs sm:text-sm font-black font-bengali leading-tight flex items-center justify-center gap-1">
-                        <Coins className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
-                        <span>৳ {plan.salary.toLocaleString()}</span>
-                      </div>
+                    {/* Number Target */}
+                    <div className={`text-base sm:text-lg font-black ${plan.numColor} font-bengali leading-tight`}>
+                      {plan.target} জন
+                    </div>
+
+                    {/* Label */}
+                    <div className="text-[9px] sm:text-[10px] text-slate-600 font-bengali leading-tight">
+                      প্রিমিয়াম মেম্বার রেফার
                     </div>
                   </div>
-                );
-              })}
+
+                  {/* Bottom Colored Banner */}
+                  <div className={`${plan.bannerBg} text-white p-2 rounded-b-xl space-y-0.5 shadow-inner`}>
+                    <div className={`text-[8.5px] sm:text-[9px] ${plan.subColor} font-bengali`}>
+                      প্রতি মাসে স্যালারি
+                    </div>
+                    <div className="text-xs sm:text-sm font-black font-bengali leading-tight flex items-center justify-center gap-1">
+                      {plan.rewardIconType === "cash" ? (
+                        <div className="w-3.5 h-3.5 flex items-center justify-center">
+                          <Banknote className="w-3.5 h-3.5 text-emerald-200" />
+                        </div>
+                      ) : (
+                        <Coins className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                      )}
+                      <span>৳ {plan.salary.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* ========================================================
               SECTION 3: INCENTIVE BONUS (বিশেষ প্রণোদনা - iPHONE)
               ======================================================== */}
-          <div className="bg-gradient-to-b from-[#0a1a3a] via-[#0b2654] to-[#071530] rounded-3xl p-3.5 sm:p-4 text-white border border-blue-500/30 shadow-xl relative overflow-hidden space-y-3.5">
+          <div className="bg-gradient-to-b from-[#0a1a3a] via-[#0b2654] to-[#071530] rounded-3xl p-3 sm:p-3.5 text-white border border-blue-500/30 shadow-xl relative overflow-hidden space-y-3">
             {/* Top Header Row */}
-            <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div className="flex items-center justify-between gap-1.5 flex-wrap">
               {/* Left Title */}
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-[#eab308] text-slate-950 flex items-center justify-center flex-shrink-0 shadow-md">
-                  <Gift className="w-5 h-5 stroke-[2.5]" />
+                <div className="w-8 h-8 rounded-xl bg-[#eab308] text-slate-950 flex items-center justify-center flex-shrink-0 shadow-md">
+                  <Gift className="w-4 h-4 stroke-[2.5]" />
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-black text-[#fde047] leading-tight">
                     Incentive Bonus
                   </h3>
-                  <div className="text-[11px] font-semibold text-sky-200 font-bengali">
+                  <div className="text-[10px] sm:text-[11px] font-semibold text-sky-200 font-bengali">
                     বিশেষ প্রণোদনা
                   </div>
                 </div>
               </div>
 
               {/* Right Notice Pill */}
-              <div className="bg-white/10 border border-white/15 rounded-2xl px-2.5 py-1.5 text-[9.5px] sm:text-[10px] text-slate-200 font-bengali leading-tight max-w-[210px]">
+              <div className="bg-[#122e60]/90 border border-blue-400/30 rounded-2xl px-2.5 py-1 text-[9px] sm:text-[9.5px] text-slate-200 font-bengali leading-tight max-w-[210px] text-center">
                 আপনার টিমের নির্দিষ্ট জেনারেশনে প্রিমিয়াম মেম্বার রেফার করলেই পেয়ে যাবেন{" "}
                 <span className="text-[#fde047] font-black underline">
                   একটি iPhone গিফট!
@@ -364,133 +368,166 @@ export default function MonthlySalaryPage() {
             </div>
 
             {/* Workflow & Reward Showcase */}
-            <div className="flex items-center justify-between gap-1.5 sm:gap-2 pt-1">
+            <div className="flex items-center justify-between gap-1 sm:gap-1.5 pt-0.5">
               {/* Left Side: 3 Generation Cards with Carets */}
-              <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0">
+              <div className="w-[63%] sm:w-[65%] shrink-0 flex items-center justify-between gap-0.5 sm:gap-1">
                 {/* 1st Generation */}
-                <div className="flex-1 bg-white rounded-xl overflow-hidden shadow-sm flex flex-col text-center border border-emerald-300">
-                  <div className="bg-[#0f766e] text-white text-[8px] sm:text-[9px] font-bold py-1 px-1">
-                    1st Gen
+                <div className="flex-1 min-w-0 bg-white rounded-xl overflow-hidden shadow-sm flex flex-col text-center border border-emerald-300">
+                  <div className="bg-[#059669] text-white text-[7px] sm:text-[7.5px] font-bold py-1 px-0.5 whitespace-nowrap tracking-tight leading-none">
+                    1st Generation
                   </div>
-                  <div className="p-1 sm:p-1.5 space-y-0.5">
+                  <div className="p-1 space-y-0.5">
                     <div className="flex justify-center text-emerald-600">
-                      <Users className="w-3.5 h-3.5" />
+                      <Users className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
-                    <div className="text-xs sm:text-sm font-black text-slate-900 font-bengali">
+                    <div className="text-[11px] sm:text-xs font-black text-slate-900 font-bengali leading-none py-0.5">
                       100 জন
                     </div>
-                    <div className="bg-[#059669] text-white text-[7.5px] sm:text-[8px] font-bold py-0.5 px-1 rounded-md">
-                      প্রিমিয়াম
+                    <div className="bg-[#059669] text-white text-[6px] sm:text-[6.5px] font-bold py-0.5 px-0.5 rounded-full whitespace-nowrap tracking-tight leading-none inline-block">
+                      প্রিমিয়াম মেম্বার
                     </div>
                   </div>
                 </div>
 
                 {/* Arrow 1 */}
-                <span className="text-white/60 font-black text-xs sm:text-sm">→</span>
+                <span className="text-white/80 font-black text-xs shrink-0 px-0.5">→</span>
 
                 {/* 2nd Generation */}
-                <div className="flex-1 bg-white rounded-xl overflow-hidden shadow-sm flex flex-col text-center border border-blue-300">
-                  <div className="bg-[#2563eb] text-white text-[8px] sm:text-[9px] font-bold py-1 px-1">
-                    2nd Gen
+                <div className="flex-1 min-w-0 bg-white rounded-xl overflow-hidden shadow-sm flex flex-col text-center border border-blue-300">
+                  <div className="bg-[#2563eb] text-white text-[7px] sm:text-[7.5px] font-bold py-1 px-0.5 whitespace-nowrap tracking-tight leading-none">
+                    2nd Generation
                   </div>
-                  <div className="p-1 sm:p-1.5 space-y-0.5">
+                  <div className="p-1 space-y-0.5">
                     <div className="flex justify-center text-blue-600">
-                      <Users className="w-3.5 h-3.5" />
+                      <Users className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
-                    <div className="text-xs sm:text-sm font-black text-slate-900 font-bengali">
+                    <div className="text-[11px] sm:text-xs font-black text-slate-900 font-bengali leading-none py-0.5">
                       50 জন
                     </div>
-                    <div className="bg-[#2563eb] text-white text-[7.5px] sm:text-[8px] font-bold py-0.5 px-1 rounded-md">
-                      প্রিমিয়াম
+                    <div className="bg-[#2563eb] text-white text-[6px] sm:text-[6.5px] font-bold py-0.5 px-0.5 rounded-full whitespace-nowrap tracking-tight leading-none inline-block">
+                      প্রিমিয়াম মেম্বার
                     </div>
                   </div>
                 </div>
 
                 {/* Arrow 2 */}
-                <span className="text-white/60 font-black text-xs sm:text-sm">→</span>
+                <span className="text-white/80 font-black text-xs shrink-0 px-0.5">→</span>
 
                 {/* 3rd Generation */}
-                <div className="flex-1 bg-white rounded-xl overflow-hidden shadow-sm flex flex-col text-center border border-purple-300">
-                  <div className="bg-[#9333ea] text-white text-[8px] sm:text-[9px] font-bold py-1 px-1">
-                    3rd Gen
+                <div className="flex-1 min-w-0 bg-white rounded-xl overflow-hidden shadow-sm flex flex-col text-center border border-purple-300">
+                  <div className="bg-[#9333ea] text-white text-[7px] sm:text-[7.5px] font-bold py-1 px-0.5 whitespace-nowrap tracking-tight leading-none">
+                    3rd Generation
                   </div>
-                  <div className="p-1 sm:p-1.5 space-y-0.5">
+                  <div className="p-1 space-y-0.5">
                     <div className="flex justify-center text-purple-600">
-                      <Users className="w-3.5 h-3.5" />
+                      <Users className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
-                    <div className="text-xs sm:text-sm font-black text-slate-900 font-bengali">
+                    <div className="text-[11px] sm:text-xs font-black text-slate-900 font-bengali leading-none py-0.5">
                       20 জন
                     </div>
-                    <div className="bg-[#9333ea] text-white text-[7.5px] sm:text-[8px] font-bold py-0.5 px-1 rounded-md">
-                      প্রিমিয়াম
+                    <div className="bg-[#9333ea] text-white text-[6px] sm:text-[6.5px] font-bold py-0.5 px-0.5 rounded-full whitespace-nowrap tracking-tight leading-none inline-block">
+                      প্রিমিয়াম মেম্বার
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Right Side: iPhone on Golden Pedestal with Ribbon & Starburst Gift Badge */}
-              <div className="w-24 sm:w-28 flex-shrink-0 relative flex items-center justify-center pl-1">
-                <svg viewBox="0 0 110 110" className="w-full h-full overflow-visible drop-shadow-lg">
+              {/* Right Side: Realistic Dual iPhone on Golden Pedestal with Ribbon & Starburst Gift Badge */}
+              <div className="w-[35%] sm:w-[33%] shrink-0 h-32 sm:h-34 relative flex items-center justify-center">
+                <svg viewBox="0 0 115 115" className="w-full h-full max-h-34 overflow-visible drop-shadow-xl">
                   {/* Golden circular glow */}
-                  <circle cx="55" cy="55" r="45" fill="#f59e0b" opacity="0.15" />
+                  <circle cx="55" cy="58" r="48" fill="#f59e0b" opacity="0.18" />
 
                   {/* Golden Pedestal / Podium */}
-                  <ellipse cx="55" cy="94" rx="42" ry="10" fill="#d97706" />
-                  <ellipse cx="55" cy="90" rx="40" ry="9" fill="#fbbf24" />
-                  <ellipse cx="55" cy="88" rx="36" ry="7" fill="#fef08a" />
+                  <ellipse cx="52" cy="102" rx="42" ry="10" fill="#b45309" />
+                  <ellipse cx="52" cy="98" rx="40" ry="9" fill="#d97706" />
+                  <ellipse cx="52" cy="94" rx="36" ry="7.5" fill="#fbbf24" />
+                  <ellipse cx="52" cy="91" rx="32" ry="6.5" fill="#fef08a" />
 
-                  {/* Sparkles around phone */}
-                  <text x="12" y="38" fontSize="10" fill="#fde047">✦</text>
-                  <text x="24" y="20" fontSize="8" fill="#fde047">★</text>
-                  <text x="86" y="24" fontSize="10" fill="#fde047">✦</text>
+                  {/* Confetti & Sparkles around phone */}
+                  <text x="4" y="38" fontSize="10" fill="#fde047">✦</text>
+                  <text x="14" y="20" fontSize="8" fill="#fde047">★</text>
+                  <text x="88" y="22" fontSize="10" fill="#fde047">✦</text>
+                  <text x="96" y="48" fontSize="7.5" fill="#fde047">★</text>
+                  <circle cx="8" cy="58" r="1.5" fill="#fbbf24" />
+                  <circle cx="94" cy="68" r="1.5" fill="#fbbf24" />
 
-                  {/* iPhone Body */}
-                  {/* Outer edge */}
-                  <rect x="34" y="16" width="38" height="70" rx="8" fill="#0f172a" stroke="#64748b" strokeWidth="1.5" />
-                  {/* Inner Screen */}
-                  <rect x="36" y="18" width="34" height="66" rx="6" fill="#1e293b" />
-                  {/* Screen wallpaper gradient (Cosmic/Purple & Sky) */}
-                  <path d="M36 40 C45 35 55 50 70 45 L70 84 L36 84 Z" fill="#6366f1" opacity="0.6" />
-                  <path d="M36 60 C50 50 58 70 70 65 L70 84 L36 84 Z" fill="#ec4899" opacity="0.5" />
+                  {/* Back Phone (Angled Titanium Grey / Dark Blue) */}
+                  <g transform="translate(-2, 0) rotate(-6 42 46)">
+                    <rect x="24" y="14" width="34" height="66" rx="7" fill="#0f172a" stroke="#475569" strokeWidth="1.5" />
+                    {/* Dual Camera Bump on Back Phone */}
+                    <rect x="27" y="17" width="13" height="22" rx="3.5" fill="#1e293b" />
+                    <circle cx="33.5" cy="23" r="3.2" fill="#0284c7" stroke="#334155" strokeWidth="1" />
+                    <circle cx="33.5" cy="33.5" r="3.2" fill="#0284c7" stroke="#334155" strokeWidth="1" />
+                  </g>
 
-                  {/* Dynamic Island / Notch */}
-                  <rect x="47" y="20" width="12" height="3" rx="1.5" fill="#000000" />
+                  {/* Front Phone (Sleek Glass Display Facing User) */}
+                  <g transform="translate(6, 4)">
+                    {/* Phone Outer Chassis */}
+                    <rect x="24" y="12" width="36" height="70" rx="7.5" fill="#0f172a" stroke="#94a3b8" strokeWidth="1.6" />
+                    {/* Inner OLED Screen */}
+                    <rect x="26" y="14" width="32" height="66" rx="5.5" fill="#090d16" />
 
-                  {/* Golden Ribbon Bow wrapped around iPhone */}
-                  <rect x="34" y="52" width="38" height="6" fill="#f59e0b" />
-                  <polygon points="50,55 42,46 48,46" fill="#fbbf24" />
-                  <polygon points="56,55 64,46 58,46" fill="#fbbf24" />
-                  <circle cx="53" cy="55" r="3" fill="#d97706" />
+                    {/* Glossy Cosmic Screen Wallpaper */}
+                    <path d="M26 34 C34 28 44 48 58 38 L58 80 L26 80 Z" fill="#6366f1" opacity="0.8" />
+                    <path d="M26 50 C38 42 46 62 58 56 L58 80 L26 80 Z" fill="#ec4899" opacity="0.65" />
+                    <circle cx="42" cy="48" r="10" fill="#38bdf8" opacity="0.4" />
 
-                  {/* Golden Scalloped Starburst Badge (iPhone গিফট 🎁) */}
-                  <g transform="translate(62, 54)">
-                    <circle cx="20" cy="20" r="18" fill="#fbbf24" stroke="#d97706" strokeWidth="1.5" />
-                    {/* Crown on badge */}
-                    <path d="M16 10 L18 13 L20 10 L22 13 L24 10 L24 14 L16 14 Z" fill="#78350f" />
-                    <text x="20" y="21" textAnchor="middle" fill="#78350f" fontSize="7" fontWeight="900" fontFamily="sans-serif">
+                    {/* Dynamic Island / Notch */}
+                    <rect x="36.5" y="16" width="11" height="2.8" rx="1.4" fill="#000000" stroke="#1e293b" strokeWidth="0.5" />
+
+                    {/* Screen Glass Reflection */}
+                    <path d="M26 14 L54 14 L36 64 L26 64 Z" fill="#ffffff" opacity="0.08" />
+
+                    {/* Golden Satin Ribbon wrapped horizontally around Front Phone */}
+                    <rect x="24" y="46" width="36" height="6.5" fill="#f59e0b" stroke="#fbbf24" strokeWidth="0.5" />
+                    {/* Ribbon 3D Bow Knot */}
+                    <polygon points="42,49 34,40 40,41" fill="#fde047" />
+                    <polygon points="42,49 50,40 44,41" fill="#fde047" />
+                    <circle cx="42" cy="49" r="3" fill="#d97706" />
+                    <circle cx="42" cy="49" r="1.8" fill="#fbbf24" />
+                  </g>
+
+                  {/* Golden Scalloped Starburst Gift Badge (iPhone গিফট 🎁) in Front */}
+                  <g transform="translate(62, 50)">
+                    {/* Golden Starburst Shadow */}
+                    <circle cx="21" cy="21" r="19" fill="#b45309" opacity="0.4" />
+                    {/* Main Starburst Yellow Disc */}
+                    <circle cx="20" cy="20" r="18" fill="#fbbf24" stroke="#d97706" strokeWidth="1.8" />
+                    <circle cx="20" cy="20" r="15" fill="none" stroke="#fef08a" strokeWidth="1" strokeDasharray="2.5 1.2" />
+
+                    {/* Crown on top of badge */}
+                    <path d="M14 10 L17 13 L20 9.5 L23 13 L26 10 L26 14.5 L14 14.5 Z" fill="#78350f" />
+
+                    {/* Text: iPhone */}
+                    <text x="20" y="21" textAnchor="middle" fill="#78350f" fontSize="7.5" fontWeight="900" fontFamily="sans-serif">
                       iPhone
                     </text>
-                    <text x="20" y="28" textAnchor="middle" fill="#78350f" fontSize="6.5" fontWeight="bold" fontFamily="sans-serif">
+
+                    {/* Text: গিফট */}
+                    <text x="20" y="27.5" textAnchor="middle" fill="#78350f" fontSize="6.5" fontWeight="bold" fontFamily="sans-serif">
                       গিফট
                     </text>
-                    <text x="20" y="34" textAnchor="middle" fontSize="6">🎁</text>
+
+                    {/* Gift Icon Emoji */}
+                    <text x="20" y="33.5" textAnchor="middle" fontSize="6">🎁</text>
                   </g>
                 </svg>
               </div>
             </div>
 
             {/* Bottom Golden Incentive CTA Button */}
-            <div className="pt-1">
+            <div className="pt-0.5">
               <button
                 type="button"
                 onClick={() => setIsIncentiveModalOpen(true)}
-                className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#fbbf24] via-[#f59e0b] to-[#eab308] text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-2.5 sm:py-3 px-4 rounded-2xl bg-gradient-to-r from-[#fbbf24] via-[#f59e0b] to-[#eab308] text-slate-950 font-black text-xs sm:text-sm shadow-lg hover:shadow-amber-500/25 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Gift className="w-4 h-4 stroke-[2.5]" />
                 <span>ইনসেনটিভ বোনাস →</span>
               </button>
 
-              <div className="text-center text-[10px] sm:text-[11px] text-sky-200 font-bengali tracking-wide mt-2">
+              <div className="text-center text-[10px] sm:text-[11px] text-sky-200 font-bengali tracking-wide mt-1.5">
                 — আপনার টিমের পারফরম্যান্স বাড়ান, জিতুন iPhone! —
               </div>
             </div>
@@ -582,7 +619,7 @@ export default function MonthlySalaryPage() {
                   disabled={isSubmitting || !selectedPlan.isEligible}
                   className={`w-full py-3 px-4 rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 ${
                     selectedPlan.isEligible
-                      ? "bg-gradient-to-r from-[#0b2654] via-[#1e5eb3] to-[#0284c7] text-white hover:shadow-lg active:scale-95"
+                      ? "bg-gradient-to-r from-[#0b2654] via-[#1e5eb3] to-[#0284c7] text-white hover:shadow-lg active:scale-95 cursor-pointer"
                       : "bg-slate-200 text-slate-400 cursor-not-allowed"
                   }`}
                 >
@@ -646,7 +683,7 @@ export default function MonthlySalaryPage() {
                 {/* Gen 1 */}
                 <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-emerald-900">১ম জেনারেশন (1st Gen):</span>
+                    <span className="font-bold text-emerald-900">১ম জেনারেশন (1st Generation):</span>
                     <span className="font-bold text-emerald-700">{gen1Count} / ১০০ জন</span>
                   </div>
                   <div className="w-full bg-emerald-200 h-2 rounded-full overflow-hidden">
@@ -660,7 +697,7 @@ export default function MonthlySalaryPage() {
                 {/* Gen 2 */}
                 <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-blue-900">২য় জেনারেশন (2nd Gen):</span>
+                    <span className="font-bold text-blue-900">২য় জেনারেশন (2nd Generation):</span>
                     <span className="font-bold text-blue-700">{gen2Count} / ৫০ জন</span>
                   </div>
                   <div className="w-full bg-blue-200 h-2 rounded-full overflow-hidden">
@@ -674,7 +711,7 @@ export default function MonthlySalaryPage() {
                 {/* Gen 3 */}
                 <div className="p-3 rounded-xl bg-purple-50 border border-purple-200 space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-purple-900">৩য় জেনারেশন (3rd Gen):</span>
+                    <span className="font-bold text-purple-900">৩য় জেনারেশন (3rd Generation):</span>
                     <span className="font-bold text-purple-700">{gen3Count} / ২০ জন</span>
                   </div>
                   <div className="w-full bg-purple-200 h-2 rounded-full overflow-hidden">
@@ -701,7 +738,7 @@ export default function MonthlySalaryPage() {
               <button
                 type="button"
                 onClick={() => router.push("/referral")}
-                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0b2654] via-[#1e5eb3] to-[#0284c7] text-white font-bold text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0b2654] via-[#1e5eb3] to-[#0284c7] text-white font-bold text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Share2 className="w-4 h-4 text-amber-400" />
                 <span>রেফারেল লিংক শেয়ার করে টিম বাড়ান</span>
