@@ -23,7 +23,19 @@ import {
   X,
   Sparkles,
   CheckCircle2,
+  Clock,
 } from "lucide-react";
+
+interface ActionItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge?: string;
+  icon: React.ComponentType<{ className?: string }>;
+  color: string;
+  href?: string;
+  onClick?: () => void;
+}
 
 export function QuickActionGrid() {
   const router = useRouter();
@@ -37,6 +49,8 @@ export function QuickActionGrid() {
   const [giftCodeInput, setGiftCodeInput] = useState("");
   const [giftError, setGiftError] = useState("");
   const [giftSuccess, setGiftSuccess] = useState<string | null>(null);
+
+  const [upcomingModalOpen, setUpcomingModalOpen] = useState(false);
 
   const handleDailyBonus = () => {
     if (dailyBonusClaimed) {
@@ -62,7 +76,7 @@ export function QuickActionGrid() {
     }
   };
 
-  const actions = [
+  const actions: ActionItem[] = [
     {
       id: "daily-bonus",
       title: "ডেইলি লগইন বোনাস",
@@ -182,10 +196,11 @@ export function QuickActionGrid() {
     {
       id: "captcha",
       title: "ক্যাপচা সলভিং",
-      subtitle: "ক্যাপচা লিখে ইনকাম",
+      subtitle: "Upcoming",
+      badge: "Upcoming",
       icon: ScanLine,
       color: "text-[#e11d48] bg-[#fff1f2]",
-      href: "/tasks",
+      onClick: () => setUpcomingModalOpen(true),
     },
   ];
 
@@ -214,8 +229,13 @@ export function QuickActionGrid() {
               <Link
                 key={item.id}
                 href={item.href}
-                className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px]"
+                className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px] relative overflow-hidden"
               >
+                {item.badge && (
+                  <span className="absolute top-1 right-1 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[7.5px] font-black px-1.5 py-0.2 rounded-full shadow-xs tracking-tight">
+                    {item.badge}
+                  </span>
+                )}
                 <div
                   className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${item.color}`}
                 >
@@ -236,8 +256,13 @@ export function QuickActionGrid() {
               key={item.id}
               type="button"
               onClick={item.onClick}
-              className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px]"
+              className="bg-white rounded-xl p-2 flex flex-col items-center justify-center text-center shadow-[0_1px_4px_rgba(0,0,0,0.03)] border border-slate-100 hover:shadow-md hover:border-slate-200 active:scale-95 transition-all group min-h-[92px] relative overflow-hidden cursor-pointer"
             >
+              {item.badge && (
+                <span className="absolute top-1 right-1 bg-gradient-to-r from-rose-500 to-pink-500 text-white text-[7.5px] font-black px-1.5 py-0.2 rounded-full shadow-xs tracking-tight">
+                  {item.badge}
+                </span>
+              )}
               <div
                 className={`w-9 h-9 rounded-xl flex items-center justify-center mb-1.5 transition-transform group-hover:scale-105 ${item.color}`}
               >
@@ -246,13 +271,65 @@ export function QuickActionGrid() {
               <span className="text-[11px] sm:text-xs font-bold text-slate-800 leading-tight line-clamp-1">
                 {item.title}
               </span>
-              <span className="text-[9px] sm:text-[10px] text-slate-400 leading-tight mt-0.5 line-clamp-1">
+              <span className="text-[9px] sm:text-[10px] text-rose-500 font-bold leading-tight mt-0.5 line-clamp-1">
                 {item.subtitle}
               </span>
             </button>
           );
         })}
       </div>
+
+      {/* Upcoming Feature Modal */}
+      {upcomingModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
+          onClick={() => setUpcomingModalOpen(false)}
+        >
+          <div
+            className="bg-white rounded-3xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl animate-in zoom-in-95 border border-slate-100 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setUpcomingModalOpen(false)}
+              className="absolute top-4 right-4 p-1 rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Glowing Icon */}
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-100 to-pink-50 text-rose-600 flex items-center justify-center mx-auto shadow-inner border border-rose-200">
+              <ScanLine className="w-8 h-8 stroke-[2.2] animate-pulse" />
+            </div>
+
+            {/* Content */}
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 border border-rose-200 px-3 py-0.5 rounded-full text-[11px] font-extrabold tracking-wide">
+                <Clock className="w-3.5 h-3.5" />
+                <span>Upcoming</span>
+              </div>
+              <h3 className="text-lg font-black text-slate-900 font-bengali">
+                ক্যাপচা সলভিং
+              </h3>
+              <p className="text-xs text-slate-600 font-bengali leading-relaxed pt-1">
+                এই ফিচারটি বর্তমানে ডেভেলপমেন্টে রয়েছে। খুব শীঘ্রই এটি সবার কাজের সুবিধার জন্য উন্মুক্ত করা হবে!
+              </p>
+            </div>
+
+            {/* Action button */}
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => setUpcomingModalOpen(false)}
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold text-xs shadow-md hover:shadow-rose-500/25 active:scale-98 transition-all cursor-pointer"
+              >
+                ঠিক আছে
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Gift Code Modal */}
       {giftModalOpen && (
